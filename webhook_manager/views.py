@@ -29,7 +29,9 @@ def line_webhook(request):
                     )
                     try:
                         print("Redirecting...")
-                        return HttpResponseRedirect(reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
+                        redirect_url = reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id})
+                        print(redirect_url)
+                        return HttpResponseRedirect(redirect_url)
                     except Exception as e:
                         print(f"Error redirecting: {e}")
                         return HttpResponse(status=500, content="Error redirecting")
