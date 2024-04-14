@@ -8,12 +8,12 @@ from .models import LineWebhook
 @csrf_exempt
 def line_webhook(request):
     if request.method == "POST":
-        data = json.loads(request.body.decode("utf-8"))
-        event_type = data['events'][0]['type']
-        user_id = data['events'][0]['source']['userId']
+        # data = json.loads(request.body.decode("utf-8"))
+        # event_type = data['events'][0]['type']
+        # user_id = data['events'][0]['source']['userId']
 
         # save data to database
-        LineWebhook.objects.create(event_type=event_type, user_id=user_id)
+        # LineWebhook.objects.create(event_type=event_type, user_id=user_id)
 
         # return success response
         return HttpResponse(status=200)
@@ -37,7 +37,8 @@ def test_post(request):
     if request.method == "POST":
         if request.content_type == "multipart/form-data":
             greeting = request.POST.get("greeting", "")
-            return JsonResponse({"greeting": greeting})
+            LineWebhook.objects.create(event_type="test", user_id=greeting)
+            return HttpResponse(status=200, content="Success")
         else:
             # Handle other content types or empty body
             if not request.body:
