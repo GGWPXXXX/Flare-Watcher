@@ -21,11 +21,6 @@ def line_webhook(request):
         return HttpResponse(status=405, content="Method not allowed")
 
 
-def test_env(request):
-    node_red_url = config("MSG_TEST")
-    return JsonResponse({"node_red_url": node_red_url})
-
-
 def get_line_user_id(request):
     if request.method == "GET":
         last_record = LineWebhook.objects.last()
@@ -36,3 +31,11 @@ def get_line_user_id(request):
             return HttpResponse(status=404, content="No record found")
     # if any other request method is used
     return HttpResponse(status=400, content="Invalid request method")
+
+
+def test_post(request):
+    if request.method == "POST":
+        data = json.loads(request.body.decode("utf-8"))
+        return JsonResponse(data)
+    else:
+        return HttpResponse(status=405, content="Method not allowed")
