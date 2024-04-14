@@ -1,7 +1,8 @@
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import requests
+from django.shortcuts import redirect
 import json
+import requests
 import os
 from decouple import config
 from .models import LineWebhook
@@ -14,26 +15,19 @@ def line_webhook(request):
             # create json object from the request body
             data = json.loads(request.body.decode("utf-8"))
             event_type = data['events'][0]['type']
-            if event_type == "follow":
-                user_id = data['events'][0]['source']['userId']
-                if user_id:
-                    LineWebhook.objects.create(
-                        user_id=user_id,
-                        event_type=event_type
-                    )
-                    return HttpResponse(status=200)
-                return HttpResponse(status=400, content="userId is missing")
-            elif event_type == "message":
+            if event_type == "message":
                 user_id = data['events'][0]['source']['userId']
                 message = data['events'][0]['message']['text']
-                print(user_id, message)
-                if user_id and message:
+                reply_token = data['events'][0]['replyToken']
+                print(user_id, message, reply_token)
+                if user_id and message == 'UserId':
                     LineWebhook.objects.create(
                         user_id=user_id,
                         event_type=event_type,
-                        reply_token=data['events'][0]['replyToken']
+                        reply_token=reply_token
                     )
-                    return HttpResponse(status=200)
+                    return redirect(get_user_id, user_id=user_id, reply_token=reply_token)
+
                 return HttpResponse(status=400, content="userId or message is missing")
 
             # handle other event types here
@@ -48,15 +42,25 @@ def line_webhook(request):
     return HttpResponse(status=405, content="Method Not Allowed")
 
 
-def get_last_user_id(request):
+def get_user_id(request, user_id, reply_token):
     if request.method == "GET":
-        last_record = LineWebhook.objects.last()
-        if last_record:
-            return JsonResponse({"user_id": last_record.user_id, "reply_token": last_record.reply_token if last_record.reply_token else ""})
-        else:
-            return HttpResponse(status=404, content="No record found")
-    # if any other request method is used
-    return HttpResponse(status=400, content="Invalid request method")
+        url = "https://api.line.me/v2/bot/message/push"
+        headers = {
+            "Content-Type": "application/json",
+            "Authorization": f"Bearer {config('CHANEL_ACCESS_TOKEN')}"
+        }
+        data = {
+            "to": reply_token,
+            "messages": [
+                {
+                    "type": "text",
+                    "text": user_id
+                }
+            ]
+        }
+        response = requests.post(url, headers=headers, data=json.dumps(data))
+        print(response.status_code, response.text)
+        return HttpResponse(status=response.status_code, content=response.text)
 
 
 @csrf_exempt
