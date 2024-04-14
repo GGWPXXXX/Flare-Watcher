@@ -28,6 +28,7 @@ def line_webhook(request):
                         event_type=event_type,
                     )
                     try:
+                        print("Redirecting...")
                         return HttpResponseRedirect(reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
                     except Exception as e:
                         print(f"Error redirecting: {e}")
