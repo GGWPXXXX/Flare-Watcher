@@ -18,7 +18,7 @@ def line_webhook(request):
         # return success response
         return HttpResponse(status=200)
     else:
-        return JsonResponse({"status": "error", "message": "Invalid request method"})
+        return HttpResponse(status=405, content="Method not allowed")
 
 
 def test_env(request):
