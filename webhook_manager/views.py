@@ -15,6 +15,7 @@ def line_webhook(request):
             # create json object from the request body
             data = json.loads(request.body.decode("utf-8"))
             event_type = data['events'][0]['type']
+            print(config('CHANEL_ACCESS_TOKEN'))
             if event_type == "message":
                 user_id = data['events'][0]['source']['userId']
                 message = data['events'][0]['message']['text']
