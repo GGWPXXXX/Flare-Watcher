@@ -18,53 +18,56 @@ def line_webhook(request):
             if event_type == "message":
                 user_id = data['events'][0]['source']['userId']
                 message = data['events'][0]['message']['text']
-                #reply_token = data['events'][0]['replyToken']
-                print(user_id, message)
+                print(f"User ID: {user_id}")
+                print(f"Message: {message}")
+
                 if user_id and message == 'UserId':
                     LineWebhook.objects.create(
                         user_id=user_id,
                         event_type=event_type,
-                        #reply_token=reply_token
                     )
-                    return redirect('get_user_id', user_id=user_id) #reply_token=reply_token)
-
-                return HttpResponse(status=400, content="userId or message is missing")
-
-            # handle other event types here
-            return HttpResponse(status=200)
-        except json.JSONDecodeError as e:
-            # if JSON decoding error occurs
-            return HttpResponse(status=400, content=str(e))
-        except KeyError as e:
-            # if necessary keys are not found in the data
-            return HttpResponse(status=400, content="Key error: {}".format(str(e)))
-    # handle non-POST requests
-    return HttpResponse(status=405, content="Method Not Allowed")
+                    try:
+                        return redirect('get_user_id', user_id=user_id)
+                    except Exception as e:
+                        print(f"Error redirecting: {e}")
+                        return HttpResponse(status=500, content="Error redirecting")
+        except Exception as e:
+            print(f"Error processing webhook: {e}")
+            return HttpResponse(status=400, content="Error processing webhook")
+    else:
+        return HttpResponse(status=405, content="Method Not Allowed")
 
 
 def get_user_id(request, user_id):
-    print("I'm here")
     if request.method == "GET":
-        url = "https://api.line.me/v2/bot/message/push"
-        headers = {
-            "Content-Type": "application/json",
-            "Authorization": f"Bearer {config('CHANEL_ACCESS_TOKEN')}"
-        }
-        data = {
-            "to": user_id,
-            "messages": [
-                {
-                    "type": "text",
-                    "text": user_id
-                }
-            ]
-        }
-        print(config('CHANEL_ACCESS_TOKEN'))
-        response = requests.post(url, headers=headers, data=json.dumps(data))
-        print(response.status_code, response.text)
-        if response.status_code == 200:
-            return HttpResponse(status=200, content="Success")
-        return HttpResponse(status=400, content="Failed")
+        print("I'm here")
+        chanel_access_token = config('CHANEL_ACCESS_TOKEN')
+        print(chanel_access_token)
+        if chanel_access_token:
+            url = "https://api.line.me/v2/bot/message/push"
+            headers = {
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {chanel_access_token}"
+            }
+            data = {
+                "to": user_id,
+                "messages": [
+                    {
+                        "type": "text",
+                        "text": user_id
+                    }
+                ]
+            }
+            response = requests.post(url, headers=headers, data=json.dumps(data))
+            print(response.status_code, response.text)
+            if response.status_code == 200:
+                return HttpResponse(status=200, content="Success")
+            else:
+                return HttpResponse(status=400, content="Failed")
+        else:
+            return HttpResponse(status=400, content="CHANEL_ACCESS_TOKEN not found in environment")
+    else:
+        return HttpResponse(status=405, content="Method Not Allowed")
 
 
 @csrf_exempt
