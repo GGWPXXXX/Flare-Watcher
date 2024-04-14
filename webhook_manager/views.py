@@ -26,7 +26,7 @@ def line_webhook(request):
                         event_type=event_type,
                         #reply_token=reply_token
                     )
-                    return redirect(get_user_id, user_id=user_id) #reply_token=reply_token)
+                    return redirect('get_user_id', user_id=user_id) #reply_token=reply_token)
 
                 return HttpResponse(status=400, content="userId or message is missing")
 
