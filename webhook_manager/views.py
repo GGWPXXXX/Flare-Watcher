@@ -36,11 +36,8 @@ def get_line_user_id(request):
 def test_post(request):
     if request.method == "POST":
         if request.body:
-            try:
-                data = json.loads(request.body.decode("utf-8"))
-                return JsonResponse(data)
-            except json.JSONDecodeError:
-                return HttpResponseBadRequest("Invalid JSON data")
+            data = request.body.decode("utf-8")
+            return JsonResponse({"data": data})
         else:
             return HttpResponseBadRequest("Empty request body")
     else:
