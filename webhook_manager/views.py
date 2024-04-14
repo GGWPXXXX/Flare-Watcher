@@ -28,15 +28,10 @@ def line_webhook(request):
                         event_type=event_type,
                     )
                     try:
-                        print("Redirecting...")
-                        redirect_url = reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id})
-                        print(redirect_url)
-                        return HttpResponseRedirect(redirect_url)
+                        return HttpResponseRedirect(reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
                     except Exception as e:
                         print(f"Error redirecting: {e}")
                         return HttpResponse(status=500, content="Error redirecting")
-                    finally:
-                        return HttpResponse(status=200, content="Success")
         except Exception as e:
             print(f"Error processing webhook: {e}")
             return HttpResponse(status=400, content="Error processing webhook")
@@ -45,10 +40,9 @@ def line_webhook(request):
 
 
 def get_user_id(request, user_id):
-    print("I'm here")
+    print(f"User ID: {user_id}")
     if request.method == "GET":
         chanel_access_token = config('CHANEL_ACCESS_TOKEN')
-        print(chanel_access_token)
         if chanel_access_token:
             url = "https://api.line.me/v2/bot/message/push"
             headers = {
