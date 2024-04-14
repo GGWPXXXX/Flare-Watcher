@@ -19,7 +19,7 @@ def line_webhook(request):
                 user_id = data['events'][0]['source']['userId']
                 message = data['events'][0]['message']['text']
                 #reply_token = data['events'][0]['replyToken']
-                #print(user_id, message, reply_token)
+                print(user_id, message)
                 if user_id and message == 'UserId':
                     LineWebhook.objects.create(
                         user_id=user_id,
