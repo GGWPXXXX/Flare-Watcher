@@ -8,7 +8,6 @@ from .models import LineWebhook
 import json
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-# Assuming LineWebhook is your Django model for storing webhook data
 from .models import LineWebhook
 
 
