@@ -33,6 +33,8 @@ def line_webhook(request):
                     except Exception as e:
                         print(f"Error redirecting: {e}")
                         return HttpResponse(status=500, content="Error redirecting")
+                    finally:
+                        return HttpResponse(status=200, content="Success")
         except Exception as e:
             print(f"Error processing webhook: {e}")
             return HttpResponse(status=400, content="Error processing webhook")
