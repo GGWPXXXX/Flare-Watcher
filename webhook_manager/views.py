@@ -35,10 +35,14 @@ def get_line_user_id(request):
 @csrf_exempt
 def test_post(request):
     if request.method == "POST":
-        if request.body:
-            data = request.body.decode("utf-8")
-            return JsonResponse({"data": data})
+        if request.content_type == "multipart/form-data":
+            greeting = request.POST.get("greeting", "")
+            return JsonResponse({"greeting": greeting})
         else:
-            return HttpResponseBadRequest("Empty request body")
+            # Handle other content types or empty body
+            if not request.body:
+                return HttpResponseBadRequest("Empty request body")
+            # You can handle different content types or formats as needed
+            return HttpResponseBadRequest("Invalid content type")
     else:
         return HttpResponse(status=405, content="Method not allowed")
