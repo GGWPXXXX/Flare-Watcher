@@ -27,6 +27,7 @@ SECRET_KEY = 'django-insecure-rgmq=umf+v=)dryiws&e2k#$vzoutglzvyewg&_1*wg=ln8sn_
 DEBUG = True
 
 ALLOWED_HOSTS = ['flare-watcher-production.up.railway.app']
+CSRF_TRUSTED_ORIGINS = ['flare-watcher-production.up.railway.app']
 
 
 # Application definition
