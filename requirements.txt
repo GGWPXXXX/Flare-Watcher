@@ -1,0 +1,4 @@
+django
+python-decouple
+gunicorn
+whitenoise

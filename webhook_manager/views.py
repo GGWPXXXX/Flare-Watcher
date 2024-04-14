@@ -1,8 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import requests
 import json
-import os
 from decouple import config
 from .models import LineWebhook
 
@@ -10,28 +8,43 @@ from .models import LineWebhook
 @csrf_exempt
 def line_webhook(request):
     if request.method == "POST":
-        data = json.loads(request.body.decode("utf-8"))
-        event_type = data['events'][0]['type']
-        user_id = data['events'][0]['source']['userId']
+        try:
+            # create json object from the request body
+            data = json.loads(request.body.decode("utf-8"))
 
-        # save data to database
-        LineWebhook.objects.create(event_type=event_type, user_id=user_id)
+            event_type = data['events'][0]['type']
+            user_id = data['events'][0]['source']['userId']
 
-        # return success response
-        return HttpResponse(status=200)
+            print("Received user_id:", user_id)
+
+            if user_id:
+                LineWebhook.objects.create(
+                    user_id=user_id, event_type=event_type)
+                return HttpResponse(status=200)
+            else:
+                # if userId is missing from the data
+                return HttpResponse(status=400, content="userId is missing")
+
+        except json.JSONDecodeError as e:
+            # if JSON decoding error occurs
+            return HttpResponse(status=400, content=str(e))
+
+        except KeyError as e:
+            # if necessary keys are not found in the data
+            return HttpResponse(status=400, content="Key error: {}".format(str(e)))
+
+        except Exception as e:
+            # If any other error occurs
+            return HttpResponse(status=400, content=str(e))
+
     else:
-        return JsonResponse({"status": "error", "message": "Invalid request method"})
-
-
-def test_env(request):
-    node_red_url = config("MSG_TEST")
-    return JsonResponse({"node_red_url": node_red_url})
+        return HttpResponse(status=405, content="Method not allowed")
 
 
 def get_last_user_id(request):
     if request.method == "GET":
         last_record = LineWebhook.objects.last()
-
+        print(last_record)
         if last_record:
             return JsonResponse({"last_user_id": last_record.user_id})
         else:
