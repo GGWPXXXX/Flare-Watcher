@@ -15,8 +15,6 @@ def line_webhook(request):
             event_type = data['events'][0]['type']
             user_id = data['events'][0]['source']['userId']
 
-            print("Received user_id:", user_id)
-
             if user_id:
                 LineWebhook.objects.create(
                     user_id=user_id, event_type=event_type)
