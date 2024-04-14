@@ -28,7 +28,7 @@ def test_env(request):
     return JsonResponse({"node_red_url": node_red_url})
 
 
-def get_last_user_id(request):
+def get_line_user_id(request):
     if request.method == "GET":
         last_record = LineWebhook.objects.last()
 
