@@ -1,4 +1,4 @@
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 from decouple import config
@@ -35,7 +35,13 @@ def get_line_user_id(request):
 @csrf_exempt
 def test_post(request):
     if request.method == "POST":
-        data = json.loads(request.body.decode("utf-8"))
-        return JsonResponse(data)
+        if request.body:
+            try:
+                data = json.loads(request.body.decode("utf-8"))
+                return JsonResponse(data)
+            except json.JSONDecodeError:
+                return HttpResponseBadRequest("Invalid JSON data")
+        else:
+            return HttpResponseBadRequest("Empty request body")
     else:
         return HttpResponse(status=405, content="Method not allowed")
