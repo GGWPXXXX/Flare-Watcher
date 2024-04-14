@@ -1,0 +1,1 @@
+web: gunicorn flare_watcher.wsgi
