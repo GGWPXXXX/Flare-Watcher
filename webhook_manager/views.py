@@ -1,8 +1,6 @@
 from django.http import HttpResponse, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-import requests
 import json
-import os
 from decouple import config
 from .models import LineWebhook
 
