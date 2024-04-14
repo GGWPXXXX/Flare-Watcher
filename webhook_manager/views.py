@@ -32,7 +32,7 @@ def get_line_user_id(request):
     # if any other request method is used
     return HttpResponse(status=400, content="Invalid request method")
 
-
+@csrf_exempt
 def test_post(request):
     if request.method == "POST":
         data = json.loads(request.body.decode("utf-8"))
