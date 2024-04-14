@@ -18,15 +18,15 @@ def line_webhook(request):
             if event_type == "message":
                 user_id = data['events'][0]['source']['userId']
                 message = data['events'][0]['message']['text']
-                reply_token = data['events'][0]['replyToken']
-                print(user_id, message, reply_token)
+                #reply_token = data['events'][0]['replyToken']
+                #print(user_id, message, reply_token)
                 if user_id and message == 'UserId':
                     LineWebhook.objects.create(
                         user_id=user_id,
                         event_type=event_type,
-                        reply_token=reply_token
+                        #reply_token=reply_token
                     )
-                    return redirect(get_user_id, user_id=user_id, reply_token=reply_token)
+                    return redirect(get_user_id, user_id=user_id) #reply_token=reply_token)
 
                 return HttpResponse(status=400, content="userId or message is missing")
 
@@ -42,7 +42,7 @@ def line_webhook(request):
     return HttpResponse(status=405, content="Method Not Allowed")
 
 
-def get_user_id(request, user_id, reply_token):
+def get_user_id(request, user_id):
     if request.method == "GET":
         url = "https://api.line.me/v2/bot/message/push"
         headers = {
@@ -50,7 +50,7 @@ def get_user_id(request, user_id, reply_token):
             "Authorization": f"Bearer {config('CHANEL_ACCESS_TOKEN')}"
         }
         data = {
-            "to": reply_token,
+            "to": user_id,
             "messages": [
                 {
                     "type": "text",
@@ -60,7 +60,9 @@ def get_user_id(request, user_id, reply_token):
         }
         response = requests.post(url, headers=headers, data=json.dumps(data))
         print(response.status_code, response.text)
-        return HttpResponse(status=response.status_code, content=response.text)
+        if response.status_code == 200:
+            return HttpResponse(status=200, content="Success")
+        return HttpResponse(status=400, content="Failed")
 
 
 @csrf_exempt
