@@ -45,8 +45,8 @@ def line_webhook(request):
 
 
 def get_user_id(request, user_id):
+    print("I'm here")
     if request.method == "GET":
-        print("I'm here")
         chanel_access_token = config('CHANEL_ACCESS_TOKEN')
         print(chanel_access_token)
         if chanel_access_token:
