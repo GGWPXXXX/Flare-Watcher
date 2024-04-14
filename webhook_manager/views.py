@@ -15,16 +15,16 @@ def line_webhook(request):
             data = json.loads(request.body.decode("utf-8"))
 
             event_type = data['events'][0]['type']
-            user_id = data['events'][0]['source']['userId']
+            if event_type == "follow":
+                user_id = data['events'][0]['source']['userId']
 
-            if user_id:
-                LineWebhook.objects.create(
-                    user_id=user_id, event_type=event_type)
-                return HttpResponse(status=200)
-            else:
-                # if userId is missing from the data
-                return HttpResponse(status=400, content="userId is missing")
-
+                if user_id:
+                    LineWebhook.objects.create(
+                        user_id=user_id, event_type=event_type)
+                    return HttpResponse(status=200)
+                else:
+                    # if userId is missing from the data
+                    return HttpResponse(status=400, content="userId is missing")
         except json.JSONDecodeError as e:
             # if JSON decoding error occurs
             return HttpResponse(status=400, content=str(e))
