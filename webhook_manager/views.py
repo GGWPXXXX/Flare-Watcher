@@ -7,12 +7,6 @@ from decouple import config
 from .models import LineWebhook
 
 
-import json
-from django.http import HttpResponse
-from django.views.decorators.csrf import csrf_exempt
-from .models import LineWebhook
-
-
 @csrf_exempt
 def line_webhook(request):
     if request.method == "POST":
