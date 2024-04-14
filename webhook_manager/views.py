@@ -13,7 +13,6 @@ def line_webhook(request):
         try:
             # create json object from the request body
             data = json.loads(request.body.decode("utf-8"))
-            print(data)
             event_type = data['events'][0]['type']
             if event_type == "follow":
                 user_id = data['events'][0]['source']['userId']
@@ -27,33 +26,33 @@ def line_webhook(request):
             elif event_type == "message":
                 user_id = data['events'][0]['source']['userId']
                 message = data['events'][0]['message']['text']
+                print(user_id, message)
                 if user_id and message:
                     LineWebhook.objects.create(
                         user_id=user_id,
                         event_type=event_type,
-                        message=message
+                        reply_token=data['events'][0]['replyToken']
                     )
                     return HttpResponse(status=200)
                 return HttpResponse(status=400, content="userId or message is missing")
-            else:
-                # handle other event types here
-                return HttpResponse(status=200)
+
+            # handle other event types here
+            return HttpResponse(status=200)
         except json.JSONDecodeError as e:
             # if JSON decoding error occurs
             return HttpResponse(status=400, content=str(e))
         except KeyError as e:
             # if necessary keys are not found in the data
             return HttpResponse(status=400, content="Key error: {}".format(str(e)))
-    else:
-        # handle non-POST requests
-        return HttpResponse(status=405, content="Method Not Allowed")
+    # handle non-POST requests
+    return HttpResponse(status=405, content="Method Not Allowed")
 
 
 def get_last_user_id(request):
     if request.method == "GET":
         last_record = LineWebhook.objects.last()
         if last_record:
-            return JsonResponse({"last_user_id": last_record.user_id})
+            return JsonResponse({"user_id": last_record.user_id, "reply_token": last_record.reply_token if last_record.reply_token else ""})
         else:
             return HttpResponse(status=404, content="No record found")
     # if any other request method is used
