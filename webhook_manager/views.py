@@ -13,32 +13,40 @@ def line_webhook(request):
         try:
             # create json object from the request body
             data = json.loads(request.body.decode("utf-8"))
-
+            print(data)
             event_type = data['events'][0]['type']
             if event_type == "follow":
                 user_id = data['events'][0]['source']['userId']
-
                 if user_id:
                     LineWebhook.objects.create(
-                        user_id=user_id, event_type=event_type)
+                        user_id=user_id,
+                        event_type=event_type
+                    )
                     return HttpResponse(status=200)
-                else:
-                    # if userId is missing from the data
-                    return HttpResponse(status=400, content="userId is missing")
+                return HttpResponse(status=400, content="userId is missing")
+            elif event_type == "message":
+                user_id = data['events'][0]['source']['userId']
+                message = data['events'][0]['message']['text']
+                if user_id and message:
+                    LineWebhook.objects.create(
+                        user_id=user_id,
+                        event_type=event_type,
+                        message=message
+                    )
+                    return HttpResponse(status=200)
+                return HttpResponse(status=400, content="userId or message is missing")
+            else:
+                # handle other event types here
+                return HttpResponse(status=200)
         except json.JSONDecodeError as e:
             # if JSON decoding error occurs
             return HttpResponse(status=400, content=str(e))
-
         except KeyError as e:
             # if necessary keys are not found in the data
             return HttpResponse(status=400, content="Key error: {}".format(str(e)))
-
-        except Exception as e:
-            # If any other error occurs
-            return HttpResponse(status=400, content=str(e))
-
     else:
-        return HttpResponse(status=405, content="Method not allowed")
+        # handle non-POST requests
+        return HttpResponse(status=405, content="Method Not Allowed")
 
 
 def get_last_user_id(request):
