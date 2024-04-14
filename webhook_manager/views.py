@@ -44,7 +44,6 @@ def line_webhook(request):
 def get_last_user_id(request):
     if request.method == "GET":
         last_record = LineWebhook.objects.last()
-        print(last_record)
         if last_record:
             return JsonResponse({"last_user_id": last_record.user_id})
         else:
