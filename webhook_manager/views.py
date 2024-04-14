@@ -58,6 +58,7 @@ def get_user_id(request, user_id):
                 }
             ]
         }
+        print(config('CHANEL_ACCESS_TOKEN'))
         response = requests.post(url, headers=headers, data=json.dumps(data))
         print(response.status_code, response.text)
         if response.status_code == 200:
