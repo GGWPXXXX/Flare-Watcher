@@ -1,6 +1,7 @@
-from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
+from django.urls import reverse
 import json
 import requests
 import os
@@ -27,7 +28,7 @@ def line_webhook(request):
                         event_type=event_type,
                     )
                     try:
-                        return redirect('get_user_id', user_id=user_id)
+                        return HttpResponseRedirect(reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
                     except Exception as e:
                         print(f"Error redirecting: {e}")
                         return HttpResponse(status=500, content="Error redirecting")
