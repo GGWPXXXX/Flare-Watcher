@@ -1,9 +1,10 @@
-import torch
+from ultralytics import YOLO
 import os
 import requests
 
 model_path = "best.pt"
 model_url = "https://media.githubusercontent.com/media/GGWPXXXX/Flare-Watcher/main/best.pt"
+
 
 def set_up():
     # check if the model file exists locally
@@ -13,6 +14,10 @@ def set_up():
         with open(model_path, 'wb') as f:
             f.write(response.content)
 
+
 def image_prediction(image_path):
     set_up()
-    model = torch.load(model_path)
+    model = YOLO('best.pt')
+    results = model(image_path)
+    for i in results:
+        i.show()
