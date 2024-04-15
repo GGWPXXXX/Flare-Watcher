@@ -27,11 +27,11 @@ def line_webhook(request):
                         user_id=user_id,
                         event_type=event_type,
                     )
-                    print('https://'+config('RAILWAY_URL', default='flare-watcher-production.up.railway.app') + reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
                     print(bool(config('DEPLOYMENT')))
                     if config('DEPLOYMENT', cast=bool) == True:
                         print("run deployment")
-                        return HttpResponseRedirect('https://' + config('RAILWAY_URL', default='flare-watcher-production.up.railway.app') + reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
+                        request = requests.get('https://' + config('RAILWAY_URL') + reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
+                        return HttpResponse(status=200, content="Success")
                     print("run local")
                     return redirect('webhook_manager:get_user_id', user_id=user_id)
         except Exception as e:
