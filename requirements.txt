@@ -3,3 +3,4 @@ python-decouple
 gunicorn
 whitenoise
 requests
+torch
