@@ -1,10 +1,7 @@
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import redirect
-from django.urls import reverse
 import json
 import requests
-import os
 from decouple import config
 from .models import LineWebhook
 
@@ -60,17 +57,3 @@ def line_webhook(request):
     # handle non-POST requests
     return HttpResponse(status=405, content="Method Not Allowed")
 
-
-def get_user_id(request, user_id):
-    if request.method == "GET":
-        pass
-
-
-@csrf_exempt
-def test_post(request):
-    if request.method == "POST":
-        greeting = request.POST.get("greeting", "")
-        LineWebhook.objects.create(event_type="test", user_id=greeting)
-        return HttpResponse(status=200, content="Success")
-    else:
-        return HttpResponse(status=405, content="Method not allowed")
