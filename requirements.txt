@@ -5,3 +5,4 @@ whitenoise
 requests
 torch
 numpy
+ultralytics

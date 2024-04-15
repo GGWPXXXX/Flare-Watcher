@@ -3,12 +3,16 @@ import os
 import requests
 
 model_path = "best.pt"
-print(os.path.exists(model_path))
-# check if the model file exists locally
-if not os.path.exists(model_path):
-    model_url = "https://raw.githubusercontent.com/GGWPXXXX/Flare-Watcher/main/best.pt"
-    response = requests.get(model_url)
-    with open(model_path, 'wb') as f:
-        f.write(response.content)
+model_url = "https://media.githubusercontent.com/media/GGWPXXXX/Flare-Watcher/main/best.pt"
 
-model = torch.load(model_path)
+def set_up():
+    # check if the model file exists locally
+    if not os.path.exists(model_path):
+        print("Downloading model file...")
+        response = requests.get(model_url)
+        with open(model_path, 'wb') as f:
+            f.write(response.content)
+
+def image_prediction(image_path):
+    set_up()
+    model = torch.load(model_path)
