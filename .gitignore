@@ -164,8 +164,6 @@ pytest.ini/
 # secret file
 .env
 
-#my model file
-best.pt
 
 
 # PyCharm
