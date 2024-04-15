@@ -4,3 +4,4 @@ gunicorn
 whitenoise
 requests
 torch
+numpy
