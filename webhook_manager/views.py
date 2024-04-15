@@ -30,7 +30,7 @@ def line_webhook(request):
                     print(reverse('webhook_manager:get_user_id',
                           kwargs={'user_id': user_id}))
                     print(bool(config('DEPLOYMENT')))
-                    if bool(config('DEPLOYMENT')) == True:
+                    if config('DEPLOYMENT', cast=bool) == True:
                         print("run deployment")
                         return HttpResponseRedirect('https://' + config('RAILWAY_URL', default='flare-watcher-production.up.railway.app') + reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
                     print("run local")
