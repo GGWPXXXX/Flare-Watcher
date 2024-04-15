@@ -1,6 +1,5 @@
 from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
-from django.shortcuts import redirect
 from django.urls import reverse
 import json
 import requests
@@ -34,12 +33,11 @@ def line_webhook(request):
                     return get_user_id(request, user_id)
         except Exception as e:
             return HttpResponse(status=400, content="Error processing webhook")
-    else:
-        return HttpResponse(status=405, content="Method Not Allowed")
+    # if other method is used, return Method Not Allowed
+    return HttpResponse(status=405, content="Method Not Allowed")
 
 
 def get_user_id(request, user_id):
-    print(f"User ID: {user_id}")
     if request.method == "GET":
         chanel_access_token = config('CHANEL_ACCESS_TOKEN')
         if chanel_access_token:
@@ -59,12 +57,8 @@ def get_user_id(request, user_id):
             }
             response = requests.post(
                 url, headers=headers, data=json.dumps(data))
-            print(response.status_code, response.text)
             if response.status_code == 200:
                 return HttpResponse(status=200, content="Success")
-            else:
-                return HttpResponse(status=400, content="Failed")
-        else:
-            return HttpResponse(status=400, content="CHANEL_ACCESS_TOKEN not found in environment")
-    else:
-        return HttpResponse(status=405, content="Method Not Allowed")
+            return HttpResponse(status=400, content="Failed")
+        return HttpResponse(status=400, content="CHANEL_ACCESS_TOKEN not found in environment")
+    return HttpResponse(status=405, content="Method Not Allowed")
