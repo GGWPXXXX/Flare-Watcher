@@ -26,9 +26,9 @@ SECRET_KEY = 'django-insecure-rgmq=umf+v=)dryiws&e2k#$vzoutglzvyewg&_1*wg=ln8sn_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['flare-watcher-production.up.railway.app', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['flare-watcher-production.up.railway.app',
+                 '127.0.0.1', 'localhost']
 CSRF_TRUSTED_ORIGINS = ['http://flare-watcher-production.up.railway.app']
-
 
 
 # Application definition
@@ -51,7 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    
+
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
@@ -129,7 +129,7 @@ STATIC_URL = 'static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage' 
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
@@ -137,3 +137,6 @@ STATICFILES_DIRS = [
 ]
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+USE_X_FORWARDED_HOST = True
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
