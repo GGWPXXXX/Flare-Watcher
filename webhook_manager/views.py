@@ -29,10 +29,11 @@ def line_webhook(request):
                     )
                     print(reverse('webhook_manager:get_user_id',
                           kwargs={'user_id': user_id}))
-                    print(config('DEPLOYMENT'))
-                    if config('DEPLOYMENT', default=False, cast=bool):
+                    print(bool(config('DEPLOYMENT')))
+                    if bool(config('DEPLOYMENT')) == True:
+                        print("run deployment")
                         return HttpResponseRedirect('https://' + config('RAILWAY_URL', default='flare-watcher-production.up.railway.app') + reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
-
+                    print("run local")
                     return redirect('webhook_manager:get_user_id', user_id=user_id)
         except Exception as e:
             print(f"Error processing webhook: {e}")
