@@ -9,6 +9,9 @@ from decouple import config
 from .models import LineWebhook
 
 
+from django.core.handlers.wsgi import WSGIRequest
+from django.test.client import RequestFactory
+
 @csrf_exempt
 def line_webhook(request):
     if request.method == "POST":
@@ -30,10 +33,13 @@ def line_webhook(request):
                     print(bool(config('DEPLOYMENT')))
                     if config('DEPLOYMENT', cast=bool) == True:
                         print("run deployment")
-                        request = requests.get('https://' + config('RAILWAY_URL') + reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
-                        return HttpResponse(status=200, content="Success")
+                        # create a fake GET request to call get_user_id view
+                        factory = RequestFactory()
+                        fake_request = factory.get(reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
+                        response = get_user_id(fake_request, user_id)
+                        return response
                     print("run local")
-                    return redirect('webhook_manager:get_user_id', user_id=user_id)
+                    return get_user_id(request, user_id)
         except Exception as e:
             print(f"Error processing webhook: {e}")
             return HttpResponse(status=400, content="Error processing webhook")
