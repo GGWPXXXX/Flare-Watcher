@@ -28,7 +28,9 @@ def line_webhook(request):
                         event_type=event_type,
                     )
                     try:
-                        return HttpResponseRedirect(reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
+                        get_user_id(request=request, user_id=user_id)
+                        return HttpResponse(status=200, content="get_user_id success")
+                        # return HttpResponseRedirect(reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
                     except Exception as e:
                         print(f"Error redirecting: {e}")
                         return HttpResponse(status=500, content="Error redirecting")
@@ -61,7 +63,7 @@ def get_user_id(request, user_id):
             response = requests.post(url, headers=headers, data=json.dumps(data))
             print(response.status_code, response.text)
             if response.status_code == 200:
-                return HttpResponse(status=200, content="Success")
+                return HttpResponse(status=200, content="Sent message successfully")
             else:
                 return HttpResponse(status=400, content="Failed")
         else:
