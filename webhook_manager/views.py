@@ -1,19 +1,17 @@
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.shortcuts import redirect
 from django.urls import reverse
 import json
 import requests
-import os
 from decouple import config
 from .models import LineWebhook
-
-
-from django.core.handlers.wsgi import WSGIRequest
 from django.test.client import RequestFactory
+
 
 @csrf_exempt
 def line_webhook(request):
+    factory = RequestFactory()
     if request.method == "POST":
         try:
             # create json object from the request body
@@ -22,26 +20,19 @@ def line_webhook(request):
             if event_type == "message":
                 user_id = data['events'][0]['source']['userId']
                 message = data['events'][0]['message']['text']
-                print(f"User ID: {user_id}")
-                print(f"Message: {message}")
-
                 if user_id and message == 'UserId':
                     LineWebhook.objects.create(
                         user_id=user_id,
                         event_type=event_type,
                     )
-                    print(bool(config('DEPLOYMENT')))
-                    if config('DEPLOYMENT', cast=bool) == True:
-                        print("run deployment")
+                    if config('DEPLOYMENT', cast=bool):
                         # create a fake GET request to call get_user_id view
-                        factory = RequestFactory()
-                        fake_request = factory.get(reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
+                        fake_request = factory.get(
+                            reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
                         response = get_user_id(fake_request, user_id)
                         return response
-                    print("run local")
                     return get_user_id(request, user_id)
         except Exception as e:
-            print(f"Error processing webhook: {e}")
             return HttpResponse(status=400, content="Error processing webhook")
     else:
         return HttpResponse(status=405, content="Method Not Allowed")
