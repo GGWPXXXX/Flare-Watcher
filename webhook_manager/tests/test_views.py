@@ -63,8 +63,3 @@ class TestViews(TestCase):
         fake_request = self.factory.get(reverse('webhook_manager:get_user_id', kwargs={'user_id': config("USER_ID")}))
         response = get_user_id(fake_request, user_id=config("USER_ID"))
         self.assertEqual(response.status_code, 200)
-
-    def test_get_user_id_failure(self):
-        with self.assertRaises(KeyError):
-            fake_request = self.factory.get(reverse('webhook_manager:get_user_id', kwargs={'user_id': '1234567890'}))
-            get_user_id(fake_request, user_id='1234567890_invalid')

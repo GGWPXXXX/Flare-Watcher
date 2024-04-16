@@ -31,6 +31,7 @@ def line_webhook(request):
                         response = get_user_id(fake_request, user_id)
                         return response
                     return get_user_id(request, user_id)
+        
         except Exception as e:
             return HttpResponse(status=400, content="Error processing webhook")
     else:
