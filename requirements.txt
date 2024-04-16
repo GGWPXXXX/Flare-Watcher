@@ -6,3 +6,4 @@ requests
 torch
 numpy
 ultralytics
+scikit-learn
