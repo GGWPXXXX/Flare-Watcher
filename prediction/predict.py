@@ -2,7 +2,7 @@ from ultralytics import YOLO
 import os
 import requests
 
-yolo_model_path = "../Flare-Watcher/prediction/model/best.pt"
+yolo_model_path = "../Flare-Watcher/prediction/model/yolo_object_detection.pt"
 yolo_model_url = "https://media.githubusercontent.com/media/GGWPXXXX/Flare-Watcher/main/best.pt"
 
 

@@ -33,8 +33,9 @@ def line_webhook(request):
                     return get_user_id(request, user_id)
         except Exception as e:
             return HttpResponse(status=400, content="Error processing webhook")
-    # if other method is used, return Method Not Allowed
-    return HttpResponse(status=405, content="Method Not Allowed")
+    else:
+        # if other method is used, return Method Not Allowed
+        return HttpResponse(status=405, content="Method Not Allowed")
 
 
 def get_user_id(request, user_id):
