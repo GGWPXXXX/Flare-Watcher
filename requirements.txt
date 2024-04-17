@@ -8,3 +8,5 @@ numpy
 ultralytics
 scikit-learn
 opencv-python-headless==4.8.1.78
+paho-mqtt
+cv2
