@@ -1,0 +1,16 @@
+version: 2.0
+buildCommand: |
+  python -m venv /workspace/venv && \
+  source /workspace/venv/bin/activate && \
+  pip install --upgrade pip && \
+  apt-get update && \
+  apt-get install -y libsm6 libxext6 libxrender-dev && \
+  pip install opencv-python-headless && \
+  pip install -r requirements.txt
+
+services:
+  - name: web
+    env:
+      - PYTHONUNBUFFERED=1
+    buildCommand: skip
+    port: 8000
