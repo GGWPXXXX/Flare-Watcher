@@ -19,7 +19,7 @@ def line_webhook(request):
             if event_type == "message":
                 user_id = data['events'][0]['source']['userId']
                 message = data['events'][0]['message']['text']
-                if user_id and message == 'UserId':
+                if user_id and message == 'UserId' and check_user_id(user_id):
                     LineWebhook.objects.create(
                         user_id=user_id,
                         event_type=event_type,
@@ -38,6 +38,11 @@ def line_webhook(request):
         # if other method is used, return Method Not Allowed
         return HttpResponse(status=405, content="Method Not Allowed")
 
+def check_user_id(user_id):
+    url = f"https://api.line.me/v2/bot/profile/{user_id}"
+    if requests.get(url).status_code == 200:
+        return HttpResponse(status=200, content="Check user_id successful")
+    return HttpResponse(status=400, content="Failed wrong or invalid user_id")
 
 def get_user_id(request, user_id):
     if request.method == "GET":
