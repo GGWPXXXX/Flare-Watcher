@@ -1,10 +1,9 @@
 import json
 from django.views.decorators.csrf import csrf_exempt
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse
 from prediction.predict import sensor_prediction, image_prediction
 import base64
 from PIL import Image
-import matplotlib.pyplot as plt
 import io
 import pickle
 
@@ -29,12 +28,11 @@ def image_prediction_view(request):
         # Open image with PIL
         img = Image.open(io.BytesIO(base64.b64decode(image_data)))
         
-        # Process image prediction
+        # process image prediction
         prediction_result = image_prediction(img)
-        for i in prediction_result:
-            i.show()
+        # serialize the result so that it can return with HttpResponse
         serialized_result = pickle.dumps(prediction_result)
         
-        return HttpResponse(status=200, content="Image prediction completed", data=prediction_result)
+        return HttpResponse(serialized_result, content_type='application/octet-stream', status=200)
     
     return HttpResponse(status=405, content="Method Not Allowed")
