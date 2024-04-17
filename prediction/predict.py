@@ -23,7 +23,7 @@ def image_prediction(image_path) -> dict:
     """ Predict the image using YOLO model to detect fire"""
     set_up()
     # load and predict
-    model = YOLO('best.pt')
+    model = YOLO(yolo_model_path)
     return model(image_path)
 
 
