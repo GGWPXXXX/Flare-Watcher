@@ -1,37 +1,62 @@
-import urequests
 import ubinascii
+import uos
 import urequests
-import network
-import upip
-import os
 
+# Function to create multipart form-data request
+def make_request(data, image=None):
+    boundary = ubinascii.hexlify(uos.urandom(16)).decode('ascii')
 
-try:
-    import urequests
-except ImportError:
-    print("Installing urequests...")
-    upip.install('urequests')
-    import urequests
+    def encode_field(field_name):
+        return (
+            b'--%s' % boundary,
+            b'Content-Disposition: form-data; name="%s"' % field_name,
+            b'', 
+            b'%s'% data[field_name]
+        )
 
-wlan = network.WLAN(network.STA_IF)
-wlan.active(True)
-if wlan.isconnected() == False:
-    wlan.connect(WIFI_SSID, WIFI_PASS)
-while not wlan.isconnected():
-    print("Can't connect :(")
-    sleep(0.5)
-print("Connected!")
+    def encode_file(field_name):
+        filename = 'latest.jpeg'
+        return (
+            b'--%s' % boundary,
+            b'Content-Disposition: form-data; name="%s"; filename="%s"' % (
+                field_name, filename),
+            b'', 
+            image
+        )
 
-img = "C:/Users/patta/Downloads/pixlr-image-generator-ff22fce5-584c-4eda-967d-4c188a5e670f.png"
-img_b64 = ubinascii.b2a_base64(img).decode('utf-8')
-img_b64 += '=' * ((4 - len(img_b64) % 4) % 4)
-print(img_b64)
+    lines = []
+    for name in data:
+        lines.extend(encode_field(name))
+    if image:
+        lines.extend(encode_file('file'))
+    lines.extend((b'--%s--' % boundary, b''))
+    body = b'\r\n'.join(lines)
+
+    headers = {
+        'content-type': 'multipart/form-data; boundary=' + boundary,
+        'content-length': str(len(body))
+    }
+    return body, headers
+
+# Function to upload image using multipart form-data request
+def upload_image(url, headers, data):
+    http_response = urequests.post(
+        url,
+        headers=headers,
+        data=data
+    )
+    if http_response.status_code == 204:
+        print('Uploaded request')
+    else:
+        raise UploadError(http_response)
+    http_response.close()
+    return http_response
+
+# Define the URL to send the request to
 url = 'http://127.0.0.1:8000/predict/image_prediction/'
-data = {'image': img_b64}
 
-try:
-    response = urequests.post(url, data=data)
-    print(response.status_code)
-    
-except OSError as e:
-    print(f"Error sending request: {e}")
+# Prepare image data
+with open("test_img.png", 'rb') as image_file:
+    image_data = image_file.read()
+
+
