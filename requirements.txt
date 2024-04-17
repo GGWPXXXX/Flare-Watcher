@@ -7,3 +7,4 @@ torch
 numpy
 ultralytics
 scikit-learn
+opencv-python

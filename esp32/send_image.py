@@ -2,6 +2,16 @@ import urequests
 import ubinascii
 import urequests
 import network
+import upip
+import os
+
+
+try:
+    import urequests
+except ImportError:
+    print("Installing urequests...")
+    upip.install('urequests')
+    import urequests
 
 wlan = network.WLAN(network.STA_IF)
 wlan.active(True)
@@ -19,19 +29,9 @@ print(img_b64)
 url = 'http://127.0.0.1:8000/predict/image_prediction/'
 data = {'image': img_b64}
 
-
-max_retries = 3
-retries = 0
-
-while retries < max_retries:
-    try:
-        response = urequests.post(url, data=data)
-        print(response.status_code)
-        break
-    except OSError as e:
-        print(f"Error sending request: {e}")
-        retries += 1
-        if retries < max_retries:
-            print(f"Retrying ({retries}/{max_retries})")
-        else:
-            print("Maximum retries reached. Unable to send request.")
+try:
+    response = urequests.post(url, data=data)
+    print(response.status_code)
+    
+except OSError as e:
+    print(f"Error sending request: {e}")
