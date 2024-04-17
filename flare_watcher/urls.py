@@ -20,4 +20,5 @@ from django.urls import path, include
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('webhook/', include('webhook_manager.urls')),
+    path('predict/', include('prediction.urls')),
 ]
