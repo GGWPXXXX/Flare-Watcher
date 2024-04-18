@@ -4,8 +4,8 @@ buildCommand: |
   source /workspace/venv/bin/activate && \
   pip install --upgrade pip && \
   apt-get update && \
-  apt-get install -y ffmpeg libsm6 libxext6 libxrender-dev libgl1 libgl1-mesa-glx -y && \
-  pip install opencv-python-headless && \
+  apt-get install -y ffmpeg libsm6 libxext6 libxrender-dev libgl1 libgl1-mesa-glx libgl1-mesa-dev libglib2.0-0 && \
+  pip uninstall opencv-python && \
   pip install -r requirements.txt
 
 services:
