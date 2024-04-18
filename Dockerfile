@@ -12,6 +12,4 @@ RUN apt-get install -y ffmpeg libsm6 libxext6 libxrender-dev libgl1 libgl1-mesa-
 RUN pip install -r requirements.txt
 RUN pip uninstall -y opencv-python
 
-CMD ["python", "manage.py", "migrate"]
-CMD ["python", "manage.py", "collectstatic", "--noinput"]
-CMD ["gunicorn", "flare_watcher.wsgi"]
+CMD ["/bin/bash", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn flare_watcher.wsgi"]
