@@ -10,3 +10,5 @@ scikit-learn
 opencv-python-headless==4.8.1.78
 opencv-python
 paho-mqtt
+django-storages 
+boto3

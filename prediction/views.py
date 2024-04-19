@@ -9,15 +9,6 @@ import pickle
 
 
 @csrf_exempt
-def sensor_prediction_view(request):
-    if request.method == "POST":
-        # extract json object and pass it to the prediction function
-        result = sensor_prediction(
-            [i for i in json.loads(request.body.decode("utf-8")).values()])
-        return HttpResponse(status=200, content=result)
-    return HttpResponse(status=405, content="Method Not Allowed")
-
-@csrf_exempt
 def image_prediction_view(request):
     if request.method == "POST":
         image_data = request.body.decode("utf-8")
