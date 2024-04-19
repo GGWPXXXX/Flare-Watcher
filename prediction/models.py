@@ -8,5 +8,6 @@ class Prediction(models.Model):
     eCO2 = models.FloatField()
     image_prediction = models.BooleanField()
     sensor_prediction = models.BooleanField()
+    flame_detected = models.BooleanField()
     created_at = models.DateTimeField(auto_now_add=True)
 

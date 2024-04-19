@@ -37,5 +37,5 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     # print(f"Received message on topic '{msg.topic}': {msg.payload.decode()}")
-    predict.predict_sensor(json.loads(msg.payload.decode()))
+    predict.sensor_prediction(json.loads(msg.payload.decode()))
     
