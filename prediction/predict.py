@@ -4,6 +4,7 @@ import os
 import requests
 import pandas as pd
 import pickle
+import json
 
 yolo_model_path = "prediction/model/yolo_object_detection.pt"
 yolo_model_url = "https://media.githubusercontent.com/media/GGWPXXXX/Flare-Watcher/main/best.pt"
@@ -39,3 +40,14 @@ def sensor_prediction(sensor_data: list) -> int:
     feature_names = ['Humidity[%]', 'TVOC[ppb]', 'eCO2[ppm]',
                      'Pressure[hPa]']
     return load_random_forest_model().predict(pd.DataFrame(np.array(sensor_data).reshape(1, -1), columns=feature_names))[0]
+
+def predict_sensor(data:json):
+    from . import models
+    keys_order = ['Humidity[%]', 'TVOC[ppb]', 'eCO2[ppm]', 'Pressure[hPa]']
+    data_for_prediction = [data[key] for key in keys_order]
+    result = sensor_prediction (data_for_prediction)
+    print(result)
+    return result
+
+def central_system():
+    pass

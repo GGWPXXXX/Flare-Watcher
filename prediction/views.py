@@ -8,13 +8,6 @@ import io
 import pickle
 
 
-def sensor_prediction_view(data:json):
-    keys_order = ['Humidity[%]', 'TVOC[ppb]', 'eCO2[ppm]', 'Pressure[hPa]']
-    data_for_prediction = [data[key] for key in keys_order]
-    result = sensor_prediction (data_for_prediction)
-    print(result)
-    return result
-
 @csrf_exempt
 def image_prediction_view(request):
     if request.method == "POST":

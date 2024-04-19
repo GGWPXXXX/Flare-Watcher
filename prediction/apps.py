@@ -2,7 +2,7 @@ from django.apps import AppConfig
 import paho.mqtt.client as mqtt
 from decouple import config
 import threading
-from . import views
+from . import predict
 import json
 
 
@@ -37,5 +37,5 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     # print(f"Received message on topic '{msg.topic}': {msg.payload.decode()}")
-    views.sensor_prediction_view(json.loads(msg.payload.decode()))
+    predict.predict_sensor(json.loads(msg.payload.decode()))
     
