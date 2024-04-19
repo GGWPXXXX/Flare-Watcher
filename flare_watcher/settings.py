@@ -139,7 +139,7 @@ AWS_SECRET_ACCESS_KEY = config('AWS_SECRET_ACCESS_KEY')
 
 AWS_STORAGE_BUCKET_NAME = config('AWS_STORAGE_BUCKET_NAME')
 AWS_S3_FILE_OVERWRITE = False
-AWS_S3_CUSTON_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
+AWS_S3_CUSTOM_DOMAIN = f'{AWS_STORAGE_BUCKET_NAME}.s3.amazonaws.com'
 
 STORAGES = {
     # Media file (image)
@@ -152,7 +152,6 @@ STORAGES = {
 }
 
 # STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
-# STATIC_URL = 'static/'
 
 # STATICFILES_DIRS = [
 #     os.path.join(BASE_DIR, "static")
