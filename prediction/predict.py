@@ -35,13 +35,19 @@ def load_random_forest_model() -> object:
     return clf2
 
 
-def sensor_prediction(sensor_data: json) -> int:
+def sensor_prediction(sensor_data: list) -> int:
     """ Predict whether the sensor data indicates a fire or not"""
     feature_names = ['Humidity[%]', 'TVOC[ppb]', 'eCO2[ppm]',
                      'Pressure[hPa]']
-    data_for_prediction = [sensor_data[key] for key in feature_names]
-    return load_random_forest_model().predict(pd.DataFrame(np.array(data_for_prediction).reshape(1, -1), columns=feature_names))[0]
+    return load_random_forest_model().predict(pd.DataFrame(np.array(sensor_data).reshape(1, -1), columns=feature_names))[0]
 
 
-def central_system():
+def central_system(data:json):
     from . import models
+    feature_names = ['Humidity[%]', 'TVOC[ppb]', 'eCO2[ppm]',
+                     'Pressure[hPa]']
+    data_for_prediction = [data[key] for key in feature_names]
+    sensor_prediction_result = sensor_prediction(data_for_prediction)
+    
+    print(data_for_prediction, sensor_prediction_result)
+    
