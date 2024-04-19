@@ -4,7 +4,7 @@ WORKDIR /app
 
 COPY . /app
 COPY prediction/model/random_forest_model.pkl /app/prediction/model/
-COPY prediction/model/yolo_object_detection.pt /app//prediction/model/
+COPY prediction/model/yolo_object_detection.pt /app/prediction/model/
 
 RUN apt-get update && \
     apt-get install -y ffmpeg libsm6 libxext6 libxrender-dev libgl1 libgl1-mesa-glx libgl1-mesa-dev libglib2.0-0 && \
