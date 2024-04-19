@@ -8,11 +8,12 @@ import io
 import pickle
 
 
-@csrf_exempt
 def sensor_prediction_view(data:json):
-    data_for_prediction = [v for k, v in data.items() if k != "user_id"]
-    print(data_for_prediction)
-    # result = sensor_prediction (data_for_prediction)
+    keys_order = ['Humidity[%]', 'TVOC[ppb]', 'eCO2[ppm]', 'Pressure[hPa]']
+    data_for_prediction = [data[key] for key in keys_order]
+    result = sensor_prediction (data_for_prediction)
+    print(result)
+    return result
 
 @csrf_exempt
 def image_prediction_view(request):

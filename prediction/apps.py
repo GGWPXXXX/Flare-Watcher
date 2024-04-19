@@ -36,6 +36,6 @@ def on_connect(client, userdata, flags, rc):
         print(f"Failed to connect to MQTT broker with result code {rc}")
 
 def on_message(client, userdata, msg):
-    print(f"Received message on topic '{msg.topic}': {msg.payload.decode()}")
+    # print(f"Received message on topic '{msg.topic}': {msg.payload.decode()}")
     views.sensor_prediction_view(json.loads(msg.payload.decode()))
     
