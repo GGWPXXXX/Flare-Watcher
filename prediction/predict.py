@@ -5,7 +5,7 @@ import requests
 import pandas as pd
 import pickle
 
-yolo_model_path = "../Flare-Watcher/prediction/model/yolo_object_detection.pt"
+yolo_model_path = "prediction/model/yolo_object_detection.pt"
 yolo_model_url = "https://media.githubusercontent.com/media/GGWPXXXX/Flare-Watcher/main/best.pt"
 
 
@@ -29,7 +29,7 @@ def image_prediction(image_path) -> dict:
 
 def load_random_forest_model() -> object:
     """ Load the random forest model """
-    with open('../Flare-Watcher/prediction/model/random_forest_model.pkl', 'rb') as f:
+    with open('prediction/model/random_forest_model.pkl', 'rb') as f:
         clf2 = pickle.load(f)
     return clf2
 
@@ -37,5 +37,5 @@ def load_random_forest_model() -> object:
 def sensor_prediction(sensor_data: list) -> int:
     """ Predict whether the sensor data indicates a fire or not"""
     feature_names = ['Humidity[%]', 'TVOC[ppb]', 'eCO2[ppm]',
-                     'Raw H2', 'Raw Ethanol', 'Pressure[hPa]']
+                     'Pressure[hPa]']
     return load_random_forest_model().predict(pd.DataFrame(np.array(sensor_data).reshape(1, -1), columns=feature_names))[0]
