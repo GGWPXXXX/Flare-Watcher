@@ -48,6 +48,8 @@ def central_system(data:json):
                      'Pressure[hPa]']
     data_for_prediction = [data[key] for key in feature_names]
     sensor_prediction_result = sensor_prediction(data_for_prediction)
-    before_predict_img = data["img"]
+    # before_predict_img = data["img"]
+    last_img_before_predict = models.PredictionImage.objects.last().before_predict.url
+    last_img_after_predict = models.PredictionImage.objects.last().after_predict.url
     print(data_for_prediction, sensor_prediction_result)
     
