@@ -11,7 +11,7 @@ from django.core.files.base import ContentFile
 from time import sleep
 
 yolo_model_path = "prediction/model/yolo_object_detection.pt"
-yolo_model_url = "https://media.githubusercontent.com/media/GGWPXXXX/Flare-Watcher/main/best.pt"
+yolo_model_url = "https://raw.githubusercontent.com/GGWPXXXX/Flare-Watcher/main/yolo_object_detection.pt"
 
 
 def set_up():
