@@ -48,8 +48,6 @@ class PredictionConfig(AppConfig):
             client.subscribe("b6510545608/year_project")
             client.subscribe(
                 "b6510545608/camera/462de33d-2624-486b-b1b7-5a534a23a267/image")
-            client.subscribe(
-                "b6510545608/camera/462de33d-2624-486b-b1b7-5a534a23a267/status")
         else:
             print(f"Failed to connect to MQTT broker with result code {rc}")
 
@@ -85,8 +83,6 @@ class PredictionConfig(AppConfig):
                 except PIL.UnidentifiedImageError as e:
                     print(f"Error opening image: {e}")
                 # predict.image_prediction(image_data)
-        else:
-            print(f"Received message: {msg.payload.decode()}")
 
     def publish_mqtt_message(self, topic, message):
         self.mqtt_client.publish(topic, message)
