@@ -1,2 +1,0 @@
-*.pt filter=lfs diff=lfs merge=lfs -text
-yolo_object_detection.pt filter=lfs diff=lfs merge=lfs -text

@@ -11,17 +11,13 @@ from django.core.files.base import ContentFile
 from time import sleep
 
 yolo_model_path = "prediction/model/yolo_object_detection.pt"
-yolo_model_url = "https://raw.githubusercontent.com/GGWPXXXX/Flare-Watcher/main/yolo_object_detection.pt"
 
 
 def set_up():
     """ Check to see whether the model file exists locally, if not download it from the url """
     # check if the model file exists locally
     if not os.path.exists(yolo_model_path):
-        print("Downloading model file...")
-        response = requests.get(yolo_model_url)
-        with open(yolo_model_path, 'wb') as f:
-            f.write(response.content)
+        return Exception("Model file does not exist")
 
 
 def image_prediction(picture_url, picture_name):

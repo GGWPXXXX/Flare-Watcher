@@ -8,9 +8,6 @@ RUN apt-get update && \
     apt-get install -y git-lfs && \
     rm -rf /var/lib/apt/lists/*
 
-RUN git lfs install && \
-    git lfs fetch && \
-    git lfs pull --include="prediction/model/yolo_object_detection.pt"
 
 RUN apt-get update && \
     apt-get install -y ffmpeg libsm6 libxext6 libxrender-dev libgl1 libgl1-mesa-glx libgl1-mesa-dev libglib2.0-0 && \
