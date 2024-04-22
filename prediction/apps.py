@@ -20,6 +20,7 @@ class PredictionConfig(AppConfig):
         "TVOC[ppb]" : None,
         "eCO2[ppm]" : None,
         "Pressure[hPa]" : None,
+        "flame_sensor" : None,
         "img": None,
     }
 
@@ -62,6 +63,7 @@ class PredictionConfig(AppConfig):
             self.data["TVOC[ppb]"] = recv_data["TVOC[ppb]"]
             self.data["eCO2[ppm]"] = recv_data["eCO2[ppm]"]
             self.data["Pressure[hPa]"] = recv_data["Pressure[hPa]"]
+            self.data["flame_sensor"] = recv_data["flame_sensor"]
             print(self.data.items())
             # send request to get image
             self.publish_mqtt_message(

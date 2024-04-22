@@ -69,3 +69,4 @@ def get_user_id(request, user_id):
             return HttpResponse(status=400, content="Failed")
         return HttpResponse(status=400, content="CHANEL_ACCESS_TOKEN not found in environment")
     return HttpResponse(status=405, content="Method Not Allowed")
+

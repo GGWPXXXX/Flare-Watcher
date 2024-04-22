@@ -12,3 +12,8 @@ opencv-python
 paho-mqtt
 django-storages 
 boto3
+
+utils.camera
+umqtt
+uasyncio
+

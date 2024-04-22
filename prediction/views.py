@@ -27,3 +27,16 @@ def image_prediction_view(request):
         return HttpResponse(serialized_result, content_type='application/octet-stream', status=200)
     
     return HttpResponse(status=405, content="Method Not Allowed")
+
+@csrf_exempt
+def sensor_prediction_view(request):
+    if request.method == "POST":
+        sensor_data = json.loads(request.body.decode("utf-8"))
+        # process sensor prediction
+        prediction_result = sensor_prediction(sensor_data)
+        # serialize the result so that it can return with HttpResponse
+        serialized_result = pickle.dumps(prediction_result)
+        
+        return HttpResponse(serialized_result, content_type='application/octet-stream', status=200)
+    
+    return HttpResponse(status=405, content="Method Not Allowed")
