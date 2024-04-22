@@ -1,34 +1,34 @@
 # Build stage
-FROM python:3.9 as build-stage
+FROM python:3.9-slim as build-stage
 
 WORKDIR /app
 
 # Copy the requirements file
 COPY requirements.txt .
 
-# Install dependencies (including development dependencies)
+# Install development dependencies
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 # Copy the application code
 COPY . .
-
-# Build the application artifacts (if applicable)
-RUN ./build.sh
 
 # Production stage
 FROM python:3.9-slim as production-stage
 
 WORKDIR /app
 
-# Copy the application artifacts from the build stage
+# Copy runtime dependencies and application artifacts from the build stage
 COPY --from=build-stage /app/dist /app/dist
 COPY --from=build-stage /app/requirements.txt .
 
 # Install only the runtime dependencies
 RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-# Copy any other necessary files
+# Copy necessary files
 COPY . .
+
+# Clean up
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
 
 # Set the environment variables and start the application
 ENV DJANGO_SUPERUSER_PASSWORD=$MY_DJANGO_SUPERUSER_PASSWORD
