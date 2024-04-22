@@ -1,24 +1,32 @@
-
-
-#Use Alpine Linux-based image
+# Use Alpine Linux-based image
 FROM python:3.9-alpine as builder
 
 WORKDIR /app
 
-COPY requirements.txt .
-RUN /opt/venv/bin/pip install -r requirements.txt
+# Install virtual environment
+RUN python3 -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
 
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Production stage
 FROM python:3.9-alpine
 
 WORKDIR /app
 
+# Copy virtual environment from the builder stage
 COPY --from=builder /opt/venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy application code
 COPY . .
 
+# Set environment variables
 ARG ENV_FILE=./.env
 ENV $(cat $ENV_FILE | xargs)
 ENV DJANGO_SUPERUSER_PASSWORD=$MY_DJANGO_SUPERUSER_PASSWORD
-ENV PATH="/opt/venv/bin:$PATH"
 
 EXPOSE 8000
 
