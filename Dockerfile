@@ -1,27 +1,38 @@
-FROM python:3.9
+# Build stage
+FROM python:3.9-slim as build-stage
 
 WORKDIR /app
 
-COPY . /app
+# Copy the requirements file
+COPY requirements.txt .
 
-RUN apt-get update && \
-    apt-get install -y git-lfs && \
-    rm -rf /var/lib/apt/lists/* &&\
-    apt-get update && \
-    apt-get install -y ffmpeg libsm6 libxext6&& \
-    rm -rf /var/lib/apt/lists/* && \
-    python -m venv /opt/venv
-ENV PATH="/opt/venv/bin:$PATH"
+# Install development dependencies
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
-RUN pip install --upgrade pip && \
-    pip install -r requirements.txt
+# Copy the application code
+COPY . .
 
-ARG ENV_FILE=./.env
-ENV $(cat $ENV_FILE | xargs)
+# Production stage
+FROM python:3.9-slim as production-stage
+
+WORKDIR /app
+
+# Copy runtime dependencies and application artifacts from the build stage
+COPY --from=build-stage /app/dist /app/dist
+COPY --from=build-stage /app/requirements.txt .
+
+# Install only the runtime dependencies
+RUN pip install --no-cache-dir --upgrade -r requirements.txt
+
+# Copy necessary files
+COPY . .
+
+# Clean up
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Set the environment variables and start the application
 ENV DJANGO_SUPERUSER_PASSWORD=$MY_DJANGO_SUPERUSER_PASSWORD
-
 CMD ["bash", "-c", "python manage.py migrate && python manage.py collectstatic --noinput && gunicorn flare_watcher.wsgi:application --bind 0.0.0.0:$PORT --forwarded-allow-ips='*' --proxy-allow-from='*' && python manage.py createsuperuser --noinput --username $DJANGO_SUPERUSER_USERNAME --email $DJANGO_SUPERUSER_EMAIL"]
-
 
 # Use Alpine Linux-based image
 # FROM python:3.9-alpine as builder
