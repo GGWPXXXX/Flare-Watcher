@@ -55,6 +55,9 @@ class PredictionConfig(AppConfig):
                 f"b6510545608/response_live_data/{USER_ID}")
         else:
             print(f"Failed to connect to MQTT broker with result code {rc}")
+    
+    def on_disconnect(self, client, userdata, rc):
+        print(f"Disconnected from MQTT broker with result code {rc}")
 
     def on_message(self, client, userdata, msg):
         self.processed_payloads = getattr(self, 'processed_payloads', set())
