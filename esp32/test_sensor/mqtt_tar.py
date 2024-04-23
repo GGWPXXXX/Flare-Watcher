@@ -2,18 +2,16 @@ from machine import Pin, I2C, ADC
 import network
 import uasyncio as asyncio
 from umqtt.robust import MQTTClient
-from bme280 import BME280, BME280_OSAMPLE_2, BME280_I2CADDR
-from sht3x import SHT3x
-from sgp30 import Adafruit_SGP30 
+from lib.bme280 import BME280, BME280_OSAMPLE_2, BME280_I2CADDR
+from lib.sht3x import SHT3x
+from lib.sgp30 import Adafruit_SGP30 
 import json
 from config import WIFI_SSID, WIFI_PASS, MQTT_BROKER, MQTT_USER, MQTT_PASS
 
 # MQTT Broker details
-
 MQTT_BROKER_NAKE = 'iot.cpe.ku.ac.th'
-MQTT_USER_NAKE = 'b6510545608'
-MQTT_PASS_NAKE = 'pattadon.lo@ku.th'
-
+MQTT_USER_NAKE = 'b6510545349'
+MQTT_PASS_NAKE = 'chaiyawut.t@ku.th'
 
 # LED setup for visual feedback
 led = Pin(12, Pin.OUT)
@@ -121,6 +119,4 @@ loop = asyncio.get_event_loop()
 loop.create_task(publisher())
 loop.create_task(send_check())
 loop.run_forever()
-
-
 
