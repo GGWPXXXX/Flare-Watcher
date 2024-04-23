@@ -8,7 +8,8 @@ from PIL import Image
 import PIL
 import io
 
-UUID = config('UUID')
+UUID = config("UUID")
+USER_ID = config("USER_ID")
 
 
 class PredictionConfig(AppConfig):
@@ -47,9 +48,11 @@ class PredictionConfig(AppConfig):
     def on_connect(self, client, userdata, flags, rc):
         if rc == 0:
             print("Connected to MQTT broker")
-            client.subscribe("b6510545608/sensor_data")
+            client.subscribe(f"b6510545608/sensor_data/{USER_ID}")
             client.subscribe(
                 f"b6510545608/camera/{UUID}/image")
+            client.subscribe(
+                f"b6510545608/response_live_data/{USER_ID}")
         else:
             print(f"Failed to connect to MQTT broker with result code {rc}")
 
@@ -57,7 +60,7 @@ class PredictionConfig(AppConfig):
         self.processed_payloads = getattr(self, 'processed_payloads', set())
         print(f"Received message on topic '{msg.topic}'")
         # if receive sensor data
-        if msg.topic == "b6510545608/sensor_data" or msg.topic == f"b6510545608/response_live_data/{config("USER_ID")}":
+        if msg.topic == f"b6510545608/sensor_data/{USER_ID}" or msg.topic == f"b6510545608/response_live_data/{USER_ID}":
             if msg.payload not in self.processed_payloads:
                 self.processed_payloads.add(msg.payload)
                 # extract sensor data from message
