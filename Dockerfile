@@ -1,6 +1,6 @@
 FROM python:3.9-slim
 
-VOLUME /root/.cache/pip
+#VOLUME /root/.cache/pip
 
 WORKDIR /app
 COPY . /app
@@ -9,7 +9,8 @@ RUN python -m venv /opt/venv
 ENV PATH="/opt/venv/bin:$PATH"
 
 RUN pip install --upgrade pip && \
-    pip install --cache-dir=/root/.cache/pip -r requirements.txt
+    pip install -r requirements.txt
+    #pip install --cache-dir=/root/.cache/pip -r requirements.txt
 
 ARG ENV_FILE=./.env
 ENV $(cat $ENV_FILE | xargs)
