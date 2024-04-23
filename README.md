@@ -35,7 +35,7 @@ Flare Watcher is an innovative fire detection system that integrates a network o
 ## Setup and Installation
 
 - Ensure that all sensors are connected properly to your microcontroller or data acquisition system.
-- Install the necessary libraries for interfacing with the SGP30, SHT31, and BME280 sensors. Common libraries are available for platforms like Arduino and Raspberry Pi.
+- Install the necessary libraries for interfacing with the SGP30, SHT31, and BME280 sensors. Common libraries are available for Micro-python.
 - Set up your environment for running Python, with packages such as `sklearn` for Random Forest models and `tensorflow` or `keras` for CNN models.
 - Deploy the sensor network in a strategic location to ensure optimal coverage and data accuracy.
 
