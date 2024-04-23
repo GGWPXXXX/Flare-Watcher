@@ -8,6 +8,7 @@ from PIL import Image
 import PIL
 import io
 
+UUID = config('UUID')
 
 class PredictionConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
@@ -45,16 +46,19 @@ class PredictionConfig(AppConfig):
     def on_connect(self, client, userdata, flags, rc):
         if rc == 0:
             print("Connected to MQTT broker")
-            client.subscribe("b6510545608/year_project")
+            client.subscribe("b6510545608/sensor_data")
             client.subscribe(
-                "b6510545608/camera/462de33d-2624-486b-b1b7-5a534a23a267/image")
+                f"b6510545608/camera/{UUID}/image")
         else:
             print(f"Failed to connect to MQTT broker with result code {rc}")
 
     def on_message(self, client, userdata, msg):
+        self.processed_payloads = getattr(self, 'processed_payloads', set())
         print(f"Received message on topic '{msg.topic}'")
         # if receive sensor data
-        if msg.topic == "b6510545608/year_project":
+        if msg.topic == "b6510545608/sensor_data" and msg.payload not in self.processed_payloads:
+            
+            self.processed_payloads.add(msg.payload)
             # extract sensor data from message
             recv_data = json.loads(msg.payload.decode())
             self.data["user_id"] = recv_data["user_id"]
@@ -65,9 +69,9 @@ class PredictionConfig(AppConfig):
             print(self.data.items())
             # send request to get image
             self.publish_mqtt_message(
-                "b6510545608/camera/462de33d-2624-486b-b1b7-5a534a23a267/shutter", 1)
+                f"b6510545608/camera/{UUID}/shutter", 1)
             self.image_request = True
-        elif msg.topic == "b6510545608/camera/462de33d-2624-486b-b1b7-5a534a23a267/image":
+        elif msg.topic == f"b6510545608/camera/{UUID}/image":
             if self.image_request:
                 print("Image received")
                 self.image_request = False
