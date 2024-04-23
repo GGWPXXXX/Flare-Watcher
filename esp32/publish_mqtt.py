@@ -2,13 +2,17 @@ from machine import Pin, I2C, ADC
 import network
 import uasyncio as asyncio
 from umqtt.robust import MQTTClient
-from lib.bme280 import BME280, BME280_OSAMPLE_2, BME280_I2CADDR
-from lib.sht3x import SHT3x
-from lib.sgp30 import Adafruit_SGP30 
+from bme280 import BME280, BME280_OSAMPLE_2, BME280_I2CADDR
+from sht3x import SHT3x
+from sgp30 import Adafruit_SGP30 
 import json
 from config import WIFI_SSID, WIFI_PASS, MQTT_BROKER, MQTT_USER, MQTT_PASS
 
 # MQTT Broker details
+
+USER_ID = "Ua5f5a2a7fba3c4756d3aa39dbf670e6a"
+
+UUID = "c9f02fdf-52ce-45bb-96e3-7a1ac611cd4f"
 
 MQTT_BROKER_NAKE = 'iot.cpe.ku.ac.th'
 MQTT_USER_NAKE = 'b6510545608'
@@ -51,7 +55,9 @@ mqtt.connect()
 print("Connected to MQTT Broker!")
 
 def sub_callback(topic, payload):
-    print("Message received on topic:", topic)
+    if topic.decode() == f"b6510545608/request_live_data/{USER_ID}":
+        print("Here")
+        publisher()
 
 # LED blinking function for indication
 def blink_led():
@@ -63,45 +69,45 @@ def blink_led():
 
 # Publisher coroutine
 async def publisher():
-    while True:
-        if not wlan.isconnected():
-            connect_to_wifi()  # Ensure connection is up
-        try:
-            # Read data from sensors
-            USER_ID = "santa_test_1"
-            
-            bme_temp, bme_pressure, bme_humidity = bme280.read_compensated_data()
-            bme_temp = bme_temp / 100.0
-            bme_pressure = bme_pressure / 25600.0
-            bme_humidity = bme_humidity / 1024.0
-            
-            sht30.measure()
-            sht_humidity, sht_temp = sht30.ht()
-            
-            temp = (bme_temp + sht_temp) / 2
-            pressure = bme_pressure
-            humidity = (bme_humidity + sht_humidity) / 2
-            
-            co2eq, tvoc = sgp30.iaq_measure()
-            
-            flame_detected = flame_sensor.value()
-            
-            data = {
-                'user_id' : USER_ID,
-                'Humidity[%]': humidity,
-                'TVOC[ppb]': tvoc,
-                'eCO2[ppm]': co2eq,
-                'Pressure[hPa]': pressure,
-                'flame_sensor' : flame_detected
-            }
-            
-            # Publish data to MQTT Broker
-            mqtt.publish(f'{MQTT_USER_NAKE}/year_project', json.dumps(data))
-            print("Data published!")
-            await asyncio.sleep(600)
-        except Exception as e:
-            print("An error occurred:", e)
-            blink_led()
+#     while True:
+    if not wlan.isconnected():
+        connect_to_wifi()  # Ensure connection is up
+    try:
+        # Read data from sensors
+        
+        bme_temp, bme_pressure, bme_humidity = bme280.read_compensated_data()
+        bme_temp = bme_temp / 100.0
+        bme_pressure = bme_pressure / 25600.0
+        bme_humidity = bme_humidity / 1024.0
+        
+        sht30.measure()
+        sht_humidity, sht_temp = sht30.ht()
+        
+        temp = (bme_temp + sht_temp) / 2
+        pressure = bme_pressure
+        humidity = (bme_humidity + sht_humidity) / 2
+        
+        co2eq, tvoc = sgp30.iaq_measure()
+        
+        flame_detected = flame_sensor.value()
+        
+        data = {
+            'user_id' : USER_ID,
+            'uuid' : UUID,
+            'Humidity[%]': humidity,
+            'TVOC[ppb]': tvoc,
+            'eCO2[ppm]': co2eq,
+            'Pressure[hPa]': pressure,
+            'flame_sensor' : flame_detected
+        }
+        
+        # Publish data to MQTT Broker
+        mqtt.publish(f'{MQTT_USER_NAKE}/sensor_data', json.dumps(data))
+#             print("Data published!")
+#             await asyncio.sleep(600)
+    except Exception as e:
+        print("An error occurred:", e)
+        blink_led()
 
 # Check message sending coroutine
 async def send_check():
@@ -117,9 +123,13 @@ async def send_check():
             blink_led()
 
 # Setup asyncio loop
+
+mqtt.subscribe(f"b6510545608/request_live_data/{USER_ID}")
+
 loop = asyncio.get_event_loop()
 loop.create_task(publisher())
 loop.create_task(send_check())
 loop.run_forever()
+
 
 
