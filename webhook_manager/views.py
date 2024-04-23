@@ -94,7 +94,6 @@ def send_line_image(user_id: str, original_img_url: str, resize_img_url: str):
         "Content-Type": "application/json",
         "Authorization": f"Bearer {CHANEL_ACCESS_TOKEN}"
     }
-    print(check_user_id(user_id))
     if check_user_id(user_id):
         response = requests.post(
             url, headers=headers, data=json.dumps(payload))
