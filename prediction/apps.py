@@ -10,6 +10,7 @@ import io
 
 UUID = config('UUID')
 
+
 class PredictionConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'prediction'
@@ -18,9 +19,9 @@ class PredictionConfig(AppConfig):
     data = {
         "user_id": None,
         "Humidity[%]": None,
-        "TVOC[ppb]" : None,
-        "eCO2[ppm]" : None,
-        "Pressure[hPa]" : None,
+        "TVOC[ppb]": None,
+        "eCO2[ppm]": None,
+        "Pressure[hPa]": None,
         "img": None,
     }
 
@@ -56,21 +57,21 @@ class PredictionConfig(AppConfig):
         self.processed_payloads = getattr(self, 'processed_payloads', set())
         print(f"Received message on topic '{msg.topic}'")
         # if receive sensor data
-        if msg.topic == "b6510545608/sensor_data" and msg.payload not in self.processed_payloads:
-            
-            self.processed_payloads.add(msg.payload)
-            # extract sensor data from message
-            recv_data = json.loads(msg.payload.decode())
-            self.data["user_id"] = recv_data["user_id"]
-            self.data["Humidity[%]"] = recv_data["Humidity[%]"]
-            self.data["TVOC[ppb]"] = recv_data["TVOC[ppb]"]
-            self.data["eCO2[ppm]"] = recv_data["eCO2[ppm]"]
-            self.data["Pressure[hPa]"] = recv_data["Pressure[hPa]"]
-            print(self.data.items())
-            # send request to get image
-            self.publish_mqtt_message(
-                f"b6510545608/camera/{UUID}/shutter", 1)
-            self.image_request = True
+        if msg.topic == "b6510545608/sensor_data" or msg.topic == f"b6510545608/response_live_data/{config("USER_ID")}":
+            if msg.payload not in self.processed_payloads:
+                self.processed_payloads.add(msg.payload)
+                # extract sensor data from message
+                recv_data = json.loads(msg.payload.decode())
+                self.data["user_id"] = recv_data["user_id"]
+                self.data["Humidity[%]"] = recv_data["Humidity[%]"]
+                self.data["TVOC[ppb]"] = recv_data["TVOC[ppb]"]
+                self.data["eCO2[ppm]"] = recv_data["eCO2[ppm]"]
+                self.data["Pressure[hPa]"] = recv_data["Pressure[hPa]"]
+                print(self.data.items())
+                # send request to get image
+                self.publish_mqtt_message(
+                    f"b6510545608/camera/{UUID}/shutter", 1)
+                self.image_request = True
         elif msg.topic == f"b6510545608/camera/{UUID}/image":
             if self.image_request:
                 print("Image received")
@@ -78,11 +79,13 @@ class PredictionConfig(AppConfig):
             # Print length and first few bytes of the received payload
                 print(f"Payload length: {len(msg.payload)}")
                 print(f"Payload start: {msg.payload[:10]}")
-                
+
                 try:
                     image = Image.open(io.BytesIO(msg.payload))
                     self.data["img"] = image
                     print(self.data.items())
+
+                    # dump both image and sensor data into processing unit
                     predict.central_system(self.data)
                 except PIL.UnidentifiedImageError as e:
                     print(f"Error opening image: {e}")

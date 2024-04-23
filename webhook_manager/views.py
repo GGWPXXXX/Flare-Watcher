@@ -6,12 +6,10 @@ import requests
 from decouple import config
 from .models import LineWebhook
 from django.test.client import RequestFactory
-import boto3
+from prediction.apps import PredictionConfig
 
 
 CHANEL_ACCESS_TOKEN = config('CHANEL_ACCESS_TOKEN')
-s3 = boto3.client('s3')
-BUCKET_NAME = config("BUCKET_NAME")
 
 
 @csrf_exempt
@@ -37,6 +35,11 @@ def line_webhook(request):
                         response = get_user_id(fake_request, user_id)
                         return response
                     return get_user_id(request, user_id)
+                elif user_id and message == 'Live Data':
+                    prediction_conf = PredictionConfig()
+                    prediction_conf.publish_mqtt_message(f"b6510545608/request_live_data/{user_id}")
+                    prediction_conf.publish_mqtt_message(f"b6510545608/camera/{config("UUID")}/shutter", 1)
+
 
         except Exception as e:
             return HttpResponse(status=400, content="Error processing webhook")
