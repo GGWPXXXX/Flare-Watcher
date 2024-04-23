@@ -5,7 +5,11 @@ FROM python:3.9-slim
 WORKDIR /app
 COPY . /app
 
-RUN python -m venv /opt/venv
+RUN apt-get update && \
+    apt-get install -y ffmpeg libsm6 libxext6 libxrender-dev libgl1 libgl1-mesa-glx libgl1-mesa-dev libglib2.0-0 && \
+    rm -rf /var/lib/apt/lists/* && \
+    python -m venv /opt/venv
+    
 ENV PATH="/opt/venv/bin:$PATH"
 
 RUN pip install --upgrade pip && \

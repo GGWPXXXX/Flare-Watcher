@@ -46,11 +46,14 @@ class PredictionConfig(AppConfig):
     def on_connect(self, client, userdata, flags, rc):
         if rc == 0:
             print("Connected to MQTT broker")
-            client.subscribe("b6510545608/sensor_data")
+            client.subscribe("b6510545608/sensor_data", qos=1)
             client.subscribe(
                 f"b6510545608/camera/{UUID}/image")
         else:
             print(f"Failed to connect to MQTT broker with result code {rc}")
+    
+    def on_disconnect(self, client, userdata, rc):
+        print(f"Disconnected from MQTT broker with result code {rc}")
 
     def on_message(self, client, userdata, msg):
         self.processed_payloads = getattr(self, 'processed_payloads', set())
