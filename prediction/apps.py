@@ -8,14 +8,14 @@ from PIL import Image
 import PIL
 import io
 
-UUID = config("UUID")
-USER_ID = config("USER_ID")
-
 
 class PredictionConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'prediction'
+    app_module = 'prediction.apps'
 
+    uuid = None
+    user_id = None
     image_request = False
     data = {
         "user_id": None,
@@ -48,11 +48,9 @@ class PredictionConfig(AppConfig):
     def on_connect(self, client, userdata, flags, rc):
         if rc == 0:
             print("Connected to MQTT broker")
-            client.subscribe(f"b6510545608/sensor_data/{USER_ID}")
+            client.subscribe(f"b6510545608/sensor_data")
             client.subscribe(
-                f"b6510545608/camera/{UUID}/image")
-            client.subscribe(
-                f"b6510545608/response_live_data/{USER_ID}")
+                f"b6510545608/camera/+/image")
         else:
             print(f"Failed to connect to MQTT broker with result code {rc}")
     
@@ -63,11 +61,13 @@ class PredictionConfig(AppConfig):
         self.processed_payloads = getattr(self, 'processed_payloads', set())
         print(f"Received message on topic '{msg.topic}'")
         # if receive sensor data
-        if msg.topic == f"b6510545608/sensor_data/{USER_ID}" or msg.topic == f"b6510545608/response_live_data/{USER_ID}":
+        if msg.topic == f"b6510545608/sensor_data":
             if msg.payload not in self.processed_payloads:
                 self.processed_payloads.add(msg.payload)
                 # extract sensor data from message
                 recv_data = json.loads(msg.payload.decode())
+                self.uuid = recv_data["uuid"]
+                self.user_id = recv_data["user_id"]
                 self.data["user_id"] = recv_data["user_id"]
                 self.data["Humidity[%]"] = recv_data["Humidity[%]"]
                 self.data["TVOC[ppb]"] = recv_data["TVOC[ppb]"]
@@ -76,16 +76,16 @@ class PredictionConfig(AppConfig):
                 print(self.data.items())
                 # send request to get image
                 self.publish_mqtt_message(
-                    f"b6510545608/camera/{UUID}/shutter", 1)
+                    f"b6510545608/camera/{self.uuid}/shutter", 1)
+                print(f"b6510545608/camera/{self.uuid}/shutter")
                 self.image_request = True
-        elif msg.topic == f"b6510545608/camera/{UUID}/image":
+        elif msg.topic == f"b6510545608/camera/{self.uuid}/image":
             if self.image_request:
                 print("Image received")
                 self.image_request = False
             # Print length and first few bytes of the received payload
                 print(f"Payload length: {len(msg.payload)}")
                 print(f"Payload start: {msg.payload[:10]}")
-
                 try:
                     image = Image.open(io.BytesIO(msg.payload))
                     self.data["img"] = image
@@ -96,6 +96,6 @@ class PredictionConfig(AppConfig):
                 except PIL.UnidentifiedImageError as e:
                     print(f"Error opening image: {e}")
                 # predict.image_prediction(image_data)
-
+                
     def publish_mqtt_message(self, topic, message):
         self.mqtt_client.publish(topic, message)

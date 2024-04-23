@@ -8,4 +8,5 @@ class OriginalSizePredictionImage(models.Model):
     
 class CompressedPredictionImage(models.Model):  
     after_predict = models.ImageField(upload_to='img_after_resize/')
+
     
