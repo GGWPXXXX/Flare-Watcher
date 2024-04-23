@@ -60,6 +60,5 @@ Flare Watcher is an innovative fire detection system that combines environmental
 
 Contributions to the Flare Watcher project are welcome, including improvements to the machine learning models, sensor integration, and system enhancements. Please submit pull requests or issues through this repository.
 
-## License
-
-This project is licensed under [license name]. For more details, see the LICENSE file.
+## Contact
+For more information or inquiries, please contact [Flare Watcher Support](mailto:chaiyawut.t@ku.th).
