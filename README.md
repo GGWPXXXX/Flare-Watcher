@@ -11,16 +11,19 @@ Flare Watcher is an innovative fire detection system that integrates a network o
    - **Type:** Gas sensor
    - **Purpose:** Measures Total Volatile Organic Compounds (TVOC) and equivalent Carbon Dioxide (eCO2) levels. These measurements can indicate the presence of fire when abnormal values are detected.
    - **Usage:** Continuously monitors the air quality to detect any chemical changes that could indicate combustion.
+   - [Datasheet for SGP30](https://www.sensirion.com/media/documents/984E0DD5/61644B8B/Sensirion_Gas_Sensors_Datasheet_SGP30.pdf)
 
 2. **SHT31 Sensor for Humidity Measurement**
    - **Type:** Humidity sensor
    - **Purpose:** Measures the relative humidity of the environment. A sudden drop in humidity can be an indicator of a fire nearby.
    - **Usage:** Data from this sensor is used to assess environmental conditions and validate other fire indicators.
+   - [Datasheet for SHT31](https://www.tme.eu/Document/2e0098c5e5c9e7ad6b9934b65a407be3/Sensirion_SHT3x_analog.pdf)
 
 3. **BME280 Sensor for Pressure Measurement**
    - **Type:** Atmospheric pressure sensor
    - **Purpose:** Measures atmospheric pressure. Significant changes in pressure can be related to weather conditions or thermal updrafts from a fire.
    - **Usage:** Helps in understanding the meteorological conditions and assessing potential fire behavior.
+   - [Datasheet for BME280](https://www.mouser.com/datasheet/2/783/BST-BME280-DS002-1509607.pdf)
 
 ### Machine Learning Models
 
@@ -35,7 +38,7 @@ Flare Watcher is an innovative fire detection system that integrates a network o
 ## Setup and Installation
 
 - Ensure that all sensors are connected properly to your microcontroller or data acquisition system.
-- Install the necessary libraries for interfacing with the SGP30, SHT31, and BME280 sensors. Common libraries are available for Micro-python.
+- Install the necessary libraries for interfacing with the SGP30, SHT31, and BME280 sensors. Common libraries are available for platforms like Arduino and Raspberry Pi.
 - Set up your environment for running Python, with packages such as `sklearn` for Random Forest models and `tensorflow` or `keras` for CNN models.
 - Deploy the sensor network in a strategic location to ensure optimal coverage and data accuracy.
 
