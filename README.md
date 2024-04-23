@@ -1,7 +1,7 @@
 # Flare Watcher Project README
 
 ## Overview
-Flare Watcher is an innovative fire detection system that integrates a network of sensors and utilizes advanced machine learning algorithms to detect and predict fire occurrences in real-time. This system uses both environmental data and image analysis to provide a comprehensive monitoring solution.
+Flare Watcher is an innovative fire detection system that combines environmental sensors and advanced machine learning algorithms to detect and predict fire occurrences in real-time. Utilizing both sensor data and image analysis, this system provides a comprehensive solution for monitoring and responding to fire threats.
 
 ## Sensor Details
 
@@ -9,53 +9,57 @@ Flare Watcher is an innovative fire detection system that integrates a network o
 
 1. **SGP30 Sensor for TVOC and eCO2 Measurement**
    - **Type:** Gas sensor
-   - **Purpose:** Measures Total Volatile Organic Compounds (TVOC) and equivalent Carbon Dioxide (eCO2) levels. These measurements can indicate the presence of fire when abnormal values are detected.
-   - **Usage:** Continuously monitors the air quality to detect any chemical changes that could indicate combustion.
+   - **Purpose:** Measures Total Volatile Organic Compounds (TVOC) and equivalent Carbon Dioxide (eCO2) to detect the presence of fire-related compounds.
+   - **Usage:** Continuously monitors air quality for chemical changes indicative of combustion.
    - [Datasheet for SGP30](https://www.sensirion.com/media/documents/984E0DD5/61644B8B/Sensirion_Gas_Sensors_Datasheet_SGP30.pdf)
 
 2. **SHT31 Sensor for Humidity Measurement**
    - **Type:** Humidity sensor
-   - **Purpose:** Measures the relative humidity of the environment. A sudden drop in humidity can be an indicator of a fire nearby.
-   - **Usage:** Data from this sensor is used to assess environmental conditions and validate other fire indicators.
+   - **Purpose:** Measures the relative humidity, where a sudden drop may indicate a nearby fire.
+   - **Usage:** Assists in assessing environmental conditions to corroborate other fire indicators.
    - [Datasheet for SHT31](https://www.tme.eu/Document/2e0098c5e5c9e7ad6b9934b65a407be3/Sensirion_SHT3x_analog.pdf)
 
 3. **BME280 Sensor for Pressure Measurement**
    - **Type:** Atmospheric pressure sensor
-   - **Purpose:** Measures atmospheric pressure. Significant changes in pressure can be related to weather conditions or thermal updrafts from a fire.
-   - **Usage:** Helps in understanding the meteorological conditions and assessing potential fire behavior.
+   - **Purpose:** Monitors atmospheric pressure; significant fluctuations can relate to weather changes or fires.
+   - **Usage:** Provides insight into meteorological conditions and potential fire behavior.
    - [Datasheet for BME280](https://www.mouser.com/datasheet/2/783/BST-BME280-DS002-1509607.pdf)
+
+4. **KY-026 Flame Detection Sensor**
+   - **Type:** Infrared flame sensor
+   - **Purpose:** Directly detects the presence of flames by sensing the infrared light emitted by fire.
+   - **Usage:** Offers immediate detection of fires, enhancing the system's responsiveness.
+   - [Datasheet for KY-026](https://moviltronics.com/wp-content/uploads/2019/10/KY-026.pdf)
 
 ### Machine Learning Models
 
 1. **Random Forest Classification**
-   - **Purpose:** Predicts the likelihood of a fire based on sensor data (TVOC, eCO2, humidity, and pressure). This model analyzes patterns and trends in the sensor data to make informed predictions about potential fire events.
-   - **Implementation:** The model is trained with historical sensor data labeled with fire occurrence information, learning to distinguish normal conditions from those likely to indicate a fire.
+   - **Purpose:** Uses sensor data (TVOC, eCO2, humidity, pressure, and flame detection) to predict the likelihood of a fire.
+   - **Implementation:** Trained with historical sensor data, learning to identify conditions indicative of fire.
 
 2. **Convolutional Neural Networks (CNN)**
-   - **Purpose:** Analyzes images to detect visual signs of fire. This model is capable of recognizing smoke, flames, and other visual indicators of fire in images.
-   - **Implementation:** Trained on a dataset of images labeled as 'fire' and 'no fire', the CNN model learns features associated with fires, enhancing the system’s ability to detect fires through visual monitoring.
+   - **Purpose:** Detects signs of fire in images by recognizing features such as smoke and flames.
+   - **Implementation:** Trained on a dataset with 'fire' and 'no fire' images, improving the system’s visual detection capabilities.
 
-## Setup and Installation
-
-- Ensure that all sensors are connected properly to your microcontroller or data acquisition system.
-- Install the necessary libraries for interfacing with the SGP30, SHT31, and BME280 sensors. Common libraries are available for platforms like Arduino and Raspberry Pi.
-- Set up your environment for running Python, with packages such as `sklearn` for Random Forest models and `tensorflow` or `keras` for CNN models.
-- Deploy the sensor network in a strategic location to ensure optimal coverage and data accuracy.
+## Installation and Setup
+```
+   do something here
+```
+### Hardware Setup
+1. Connect the SGP30, SHT31, BME280, and KY-026 sensors to your microcontroller as per the respective datasheets.
+2. Ensure a stable power supply and secure connections to avoid data interruptions.
 
 ## Usage
 
-1. Start by calibrating each sensor according to the manufacturer's instructions to ensure accurate readings.
-2. Collect data continuously from the sensors and feed this into the Random Forest model to evaluate the likelihood of fire.
-3. Simultaneously, capture images from cameras in the area to be analyzed by the CNN model for visual signs of fire.
-4. Integrate alerts and notifications to inform relevant personnel or authorities when a fire is detected or predicted by the models.
-
-For more detailed information on the configuration and technical specifications, please refer to the individual sensor datasheets and machine learning model documentation.
+1. Calibrate each sensor according to the manufacturer's instructions for accurate readings.
+2. Continuously collect data from the sensors and analyze it using the Random Forest model to assess fire likelihood.
+3. Use cameras to capture area images, analyzing them with the CNN model for visual indications of fire.
+4. Set up alerts and notifications to inform personnel or authorities when a fire is detected or predicted.
 
 ## Contributing
 
-Contributions to the Flare Watcher project are welcome. This can include enhancing the machine learning models, improving sensor integration, or expanding the system's capabilities. Please submit pull requests or issue reports through this repository.
+Contributions to the Flare Watcher project are welcome, including improvements to the machine learning models, sensor integration, and system enhancements. Please submit pull requests or issues through this repository.
 
 ## License
 
-This project is licensed under [license name]. See the LICENSE file for more details.
-
+This project is licensed under [license name]. For more details, see the LICENSE file.
