@@ -94,4 +94,72 @@ class PredictionTestCase(TestCase):
         self.assertEqual(response.status_code, 405)
         self.assertEqual(response.content, b"Method Not Allowed")
 
+
+    def test_before_prediction_image(self):
+        before_prediction_image = BeforePredictionImage.objects.create(
+            image="image.jpg",
+            prediction_result="result"
+        )
+        self.assertEqual(str(before_prediction_image), before_prediction_image.image)
+
+    def test_after_prediction_image(self):
+        after_prediction_image = AfterPredictionImage.objects.create(
+            image="image.jpg",
+            prediction_result="result"
+        )
+        self.assertEqual(str(after_prediction_image), after_prediction_image.image)
+
+    def test_prediction_config(self):
+        self.assertEqual(PredictionConfig.name, 'prediction')
+        self.assertEqual(PredictionConfig.image_request, False)
+        self.assertEqual(PredictionConfig.data, {
+            "user_id": None,
+            "Humidity[%]": None,
+            "TVOC[ppb]" : None,
+            "eCO2[ppm]" : None,
+            "Pressure[hPa]" : None,
+            "flame_sensor" : None,
+            "img": None,
+        })
+
+    def test_mqtt_client(self):
+        self.assertEqual(mqtt_client.username_pw_set("user", "pass"), None)
+        self.assertEqual(mqtt_client.connect("broker", 1883, 60), None)
+        self.assertEqual(mqtt_client.loop_forever(), None)
+        self.assertEqual(mqtt_client.on_connect(mqtt_client, None, None, 0), None)
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, None), None)
+        self.assertEqual(data["user_id"], None)
+        self.assertEqual(data["Humidity[%]"], None)
+        self.assertEqual(data["TVOC[ppb]"], None)
+        self.assertEqual(data["eCO2[ppm]"], None)
+        self.assertEqual(data["Pressure[hPa]"], None)
+        self.assertEqual(data["flame_sensor"], None)
+        self.assertEqual(data["img"], None)
+        self.assertEqual(data.items(), dict(data).items())
+        self.assertEqual(data.items(), data.items())
     
+    def test_mqtt_client_on_connect(self):
+        self.assertEqual(mqtt_client.on_connect(mqtt_client, None, None, 0), None)
+        self.assertEqual(mqtt_client.on_connect(mqtt_client, None, None, 1), None)
+        self.assertEqual(mqtt_client.on_connect(mqtt_client, None, None, 2), None) 
+
+    def test_mqtt_client_on_message(self):
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, None), None)
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, None), None)
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, None), None)
+    
+    def test_mqtt_client_on_message_topic(self):
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, "b6510545608/year_project"), None)
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, "b6510545608/camera/462de33d-2624-486b-b1b7-5a534a23a267/image"), None)
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, "b6510545608/year_project"), None)
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, "b6510545608/camera/462de33d-2624-486b-b1b7-5a534a23a267/image"), None)
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, "b6510545608/year_project"), None)
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, "b6510545608/camera/462de33d-2624-486b-b1b7-5a534a23a267/image"), None)
+
+    def test_mqtt_client_on_message_topic_data(self):
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, "b6510545608/year_project"), None)
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, "b6510545608/camera/462de33d-2624-486b-b1b7-5a534a23a267/image"), None)
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, "b6510545608/year_project"), None)
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, "b6510545608/camera/462de33d-2624-486b-b1b7-5a534a23a267/image"), None)
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, "b6510545608/year_project"), None)
+        self.assertEqual(mqtt_client.on_message(mqtt_client, None, "b6510545608/camera/462de33d-2624-486b-b1b7-5a534a23a267/image"), None)
