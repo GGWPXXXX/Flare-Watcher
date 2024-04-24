@@ -8,7 +8,6 @@ from .models import LineWebhook
 from django.test.client import RequestFactory
 import paho.mqtt.client as mqtt
 
-
 CHANEL_ACCESS_TOKEN = config('CHANEL_ACCESS_TOKEN')
 
 
@@ -113,3 +112,24 @@ def publish_mqtt_message(topic, message):
     mqtt_client.publish(topic, message)
     mqtt_client.disconnect()
     return HttpResponse(status=200, content="Success")
+
+def send_line_message(user_id, message):
+    url = "https://api.line.me/v2/bot/message/push"
+    payload = {
+        "to": user_id,
+        "messages": [
+            {
+                "type": "text",
+                "text": message
+            }
+        ]
+    }
+    headers = {
+        "Content-Type": "application/json",
+        "Authorization": f"Bearer {CHANEL_ACCESS_TOKEN}"
+    }
+    if check_user_id(user_id):
+        response = requests.post(
+            url, headers=headers, data=json.dumps(payload))
+        return response
+    return HttpResponse(status=400, content="User not found")
