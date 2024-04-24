@@ -20,9 +20,9 @@ ALERT_MSG = """\
 
 Our monitoring system has detected a high likelihood of a fire based on the readings from all three sensors and models:
 
-🚨 Sensor 1: {}
-🚨 Sensor 2: {}
-🚨 Model 1: {}
+🚨 Sensor Prediction: {}
+🚨 Image Prediction: {}
+🚨 Flame Sensor: {}
 
 Immediate evacuation is strongly recommended. Please leave the premises immediately and proceed to the designated safe area.
 
