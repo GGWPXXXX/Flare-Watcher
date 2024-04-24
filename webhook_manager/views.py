@@ -11,6 +11,7 @@ import paho.mqtt.client as mqtt
 
 CHANEL_ACCESS_TOKEN = config('CHANEL_ACCESS_TOKEN')
 
+
 @csrf_exempt
 def line_webhook(request):
     factory = RequestFactory()
@@ -20,7 +21,7 @@ def line_webhook(request):
             data = json.loads(request.body.decode("utf-8"))
             event_type = data['events'][0]['type']
             if event_type == "message":
-                
+
                 user_id = data['events'][0]['source']['userId']
                 message = data['events'][0]['message']['text']
                 if user_id and message == 'UserId' and check_user_id(user_id):
@@ -36,7 +37,8 @@ def line_webhook(request):
                         return response
                     return get_user_id(request, user_id)
                 elif message == 'Live Data':
-                    publish_mqtt_message(f"b6510545608/request_live_data/{user_id}", "Send live data")
+                    publish_mqtt_message(
+                        f"b6510545608/request_live_data/{user_id}", "Send live data")
                     return HttpResponse(status=200, content="Success")
         except Exception as e:
             return HttpResponse(status=400, content=e)
@@ -102,10 +104,12 @@ def send_line_image(user_id: str, original_img_url: str, resize_img_url: str):
         return response
     return HttpResponse(status=400, content="User not found")
 
+
 def publish_mqtt_message(topic, message):
     mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
     mqtt_client.username_pw_set(config('MQTT_USER'), config('MQTT_PASS'))
-    mqtt_client.connect(config('MQTT_BROKER'), config('MQTT_PORT', cast=int), 60)
+    mqtt_client.connect(config('MQTT_BROKER'),
+                        config('MQTT_PORT', cast=int), 60)
     mqtt_client.publish(topic, message)
     mqtt_client.disconnect()
     return HttpResponse(status=200, content="Success")

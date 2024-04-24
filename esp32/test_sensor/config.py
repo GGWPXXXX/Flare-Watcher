@@ -1,0 +1,5 @@
+WIFI_SSID = "Chuchart__new2.4G"
+WIFI_PASS = "024126838"
+MQTT_BROKER = "iot.cpe.ku.ac.th"
+MQTT_USER = "b6510545608"
+MQTT_PASS = "pattadon.lo@ku.th"
