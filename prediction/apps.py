@@ -1,6 +1,7 @@
 from django.apps import AppConfig
 import paho.mqtt.client as mqtt
 from decouple import config
+import threading
 import json
 from . import predict
 from PIL import Image
@@ -26,19 +27,22 @@ class PredictionConfig(AppConfig):
     }
 
     def ready(self):
-        self.start_mqtt_client()
+        self.mqtt_client = self.start_mqtt_client_thread()
 
-    def start_mqtt_client(self):
-        self.mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
-        self.mqtt_client.on_connect = self.on_connect
-        self.mqtt_client.on_message = self.on_message
+    def start_mqtt_client_thread(self):
+        mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
+        mqtt_client.on_connect = self.on_connect
+        mqtt_client.on_message = self.on_message
 
-        self.mqtt_client.username_pw_set(config('MQTT_USER'), config('MQTT_PASS'))
-        self.mqtt_client.connect(config('MQTT_BROKER'), config('MQTT_PORT', cast=int), 60)
+        mqtt_client.username_pw_set(config('MQTT_USER'), config('MQTT_PASS'))
+        mqtt_client.connect(config('MQTT_BROKER'), config('MQTT_PORT', cast=int), 60)
 
-        self.mqtt_client.loop_start()  # Start the MQTT client loop
+        # Start MQTT client in a separate thread
+        mqtt_thread = threading.Thread(target=mqtt_client.loop_forever)
+        mqtt_thread.daemon = True
+        mqtt_thread.start()
 
-        return self.mqtt_client
+        return mqtt_client
 
     def on_connect(self, client, userdata, flags, rc):
         if rc == 0:
