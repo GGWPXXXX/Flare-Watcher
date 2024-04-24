@@ -12,3 +12,5 @@ opencv-python
 paho-mqtt
 django-storages 
 boto3
+
+
