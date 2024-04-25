@@ -69,6 +69,7 @@ class PredictionConfig(AppConfig):
             self.data["eCO2[ppm]"] = recv_data["eCO2[ppm]"]
             self.data["Pressure[hPa]"] = recv_data["Pressure[hPa]"]
             self.data["flame_sensor"] = recv_data["flame_sensor"]
+            self.data["is_live_data"] = recv_data["is_live_data"]
             print(self.data.items())
             # send request to get image
             self.publish_mqtt_message(f"b6510545608/camera/{self.uuid}/shutter", 1)

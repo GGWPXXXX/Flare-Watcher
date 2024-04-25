@@ -31,3 +31,19 @@ Emergency services have been notified, and assistance is on the way. Do not atte
 We will continue to monitor the situation and provide updates as they become available. Your safety is our utmost concern.
 
 """
+
+
+LIVE_DATA_NO_FIRE_MSG = """\
+📷 Live Data - No Fire Detected 📷
+
+Based on the latest data from our monitoring system, there is currently no fire detected in the monitored area. Here are the latest sensor readings:
+
+🌡️ Humidity: {}%
+🌫️ TVOC: {} ppb
+🌬️ eCO2: {} ppm
+☁️ Pressure: {} hPa
+🔥 Flame Sensor: {}
+
+Please note that these readings are subject to change, and we will continue to monitor the situation closely. If any concerning changes are detected, we will promptly notify you.
+
+Stay safe, and thank you for using our fire monitoring service. Your safety is our top priority."""

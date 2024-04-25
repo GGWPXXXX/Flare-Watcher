@@ -8,7 +8,7 @@ import io
 from django.core.files.base import ContentFile
 from time import sleep
 from PIL import Image
-from .const import WARNING_MSG, ALERT_MSG
+from .const import WARNING_MSG, ALERT_MSG, LIVE_DATA_NO_FIRE_MSG
 
 yolo_model_path = "prediction/model/yolo_object_detection.pt"
 
@@ -124,18 +124,18 @@ def central_system(data: dict):
     # if at least 2 out of 3 sources indicate fire send warning message
     if indicator == 2:
         formatted_msg = WARNING_MSG.format("✅" if sensor_prediction_result == 1 else "❌",
-                                           "✅" if pred_result == 1 else "❌", "✅" if data["flame_sensor"] == 1 else "❌")
+                                           "✅" if pred_result == 1 else "❌", "✅" if int(data["flame_sensor"]) == 1 else "❌")
         # send line message
         msg_result = views.send_line_message(data["user_id"], formatted_msg)
         print(f"Send messgae with response: {msg_result}")
         # send line image
-        result = views.send_line_image(
+        img_result = views.send_line_image(
             data["user_id"], url_original_img_after_predict, url_resize_img_after_predict)
-        print(f"Send image with response: {result}")
+        print(f"Send image with response: {img_result}")
     # if all 3 sources indicate fire send alert message
     elif indicator == 3:
         formatted_msg = ALERT_MSG.format("✅" if sensor_prediction_result == 1 else "❌",
-                                         "✅" if pred_result == 1 else "❌", "✅" if data["flame_sensor"] == 1 else "❌")
+                                         "✅" if pred_result == 1 else "❌", "✅" if int(data["flame_sensor"]) == 1 else "❌")
         # send line message
         msg_result = views.send_line_message(data["user_id"], formatted_msg)
         print(f"Send messgae with response: {msg_result}")
@@ -144,8 +144,14 @@ def central_system(data: dict):
             data["user_id"], url_original_img_after_predict, url_resize_img_after_predict)
         print(f"Send image with response: {img_result}")
     else:
-        print("No fire detected")
-
+        # if no fire detected and user request for live data
+        if bool(int(data["is_live_data"])):
+            # send line message
+            msg_result = views.send_line_message(
+                data["user_id"], LIVE_DATA_NO_FIRE_MSG.format(data["Humidity[%]"], data["TVOC[ppb]"], data["eCO2[ppm]"], data["Pressure[hPa]"], "✅" if int(data["flame_sensor"]) == 1 else "❌"))
+            print(f"Send messgae with response: {msg_result}")
+            img_result = views.send_line_image(
+            data["user_id"], url_original_img_after_predict, url_resize_img_after_predict)
 
 def resize_and_compress_image(image_data, max_size=1024, max_file_size=1024 * 1024):
     img = Image.open(io.BytesIO(image_data))
