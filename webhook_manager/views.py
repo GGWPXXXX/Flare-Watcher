@@ -13,6 +13,7 @@ CHANEL_ACCESS_TOKEN = config('CHANEL_ACCESS_TOKEN')
 
 @csrf_exempt
 def line_webhook(request):
+    """ Webhook for Line messaging API """
     factory = RequestFactory()
     if request.method == "POST":
         try:
@@ -35,7 +36,7 @@ def line_webhook(request):
                         response = get_user_id(fake_request, user_id)
                         return response
                     return get_user_id(request, user_id)
-                elif message == 'Live Data':
+                elif message == 'Live Data' and check_user_id(user_id):
                     publish_mqtt_message(
                         f"b6510545608/request_live_data/{user_id}", "Send live data")
                     return HttpResponse(status=200, content="Success")
@@ -49,6 +50,7 @@ def line_webhook(request):
 
 
 def check_user_id(user_id):
+    """ Check if the user id is valid """
     headers = {
         "Content-Type": "application/json",
         "Authorization": f"Bearer {CHANEL_ACCESS_TOKEN}"
@@ -58,6 +60,7 @@ def check_user_id(user_id):
 
 
 def get_user_id(request, user_id: str):
+    """ Get user id from the request body """
     if request.method == "GET":
         url = "https://api.line.me/v2/bot/message/push"
         headers = {
@@ -82,6 +85,7 @@ def get_user_id(request, user_id: str):
 
 
 def send_line_image(user_id: str, original_img_url: str, resize_img_url: str):
+    """ Send image to the user """
     url = "https://api.line.me/v2/bot/message/push"
     payload = {
         "to": user_id,
@@ -105,6 +109,7 @@ def send_line_image(user_id: str, original_img_url: str, resize_img_url: str):
 
 
 def publish_mqtt_message(topic, message):
+    """ Publish a message to the MQTT broker """
     mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION1)
     mqtt_client.username_pw_set(config('MQTT_USER'), config('MQTT_PASS'))
     mqtt_client.connect(config('MQTT_BROKER'),
@@ -114,6 +119,7 @@ def publish_mqtt_message(topic, message):
     return HttpResponse(status=200, content="Success")
 
 def send_line_message(user_id, message):
+    """ Send a message to the user"""
     url = "https://api.line.me/v2/bot/message/push"
     payload = {
         "to": user_id,

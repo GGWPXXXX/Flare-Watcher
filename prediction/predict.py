@@ -44,6 +44,7 @@ def sensor_prediction(sensor_data: list) -> int:
 
 
 def central_system(data: dict):
+    """ Central system that processes the data and sends a warning or alert message if fire is detected """
     from . import models
     import json
     from webhook_manager import views
