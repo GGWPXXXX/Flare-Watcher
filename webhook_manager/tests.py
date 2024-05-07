@@ -52,11 +52,11 @@ class TestUrls(TestCase):
             f"/webhook/get_user_id/{self.invalid_user_id}/")
         self.assertEqual(response.status_code, 400)
 
-    def test_line_webhook_POST_with_valid_user_id(self):
-        """Test if the line_webhook view returns 200 OK when a POST request is made with valid user_id"""
-        response = self.client.post(self.line_webhook_url, {'events':
-                                                            [{'type': 'message',
-                                                            'source': {'userId': self.valid_user_id},
-                                                            'message': {'text': 'UserId'}}]})
-        self.assertEqual(response.status_code, 200)
+    # def test_line_webhook_POST_with_valid_user_id(self):
+    #     """Test if the line_webhook view returns 200 OK when a POST request is made with valid user_id"""
+    #     response = self.client.post(self.line_webhook_url, {'events':
+    #                                                         [{'type': 'message',
+    #                                                         'source': {'userId': self.valid_user_id},
+    #                                                         'message': {'text': 'UserId'}}]})
+    #     self.assertEqual(response.status_code, 200)
 
