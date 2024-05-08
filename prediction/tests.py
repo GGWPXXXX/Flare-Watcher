@@ -6,17 +6,18 @@ import numpy as np
 from PIL import Image
 from django.test import TestCase, Client, RequestFactory, SimpleTestCase
 from django.urls import reverse, resolve
-from prediction.models import BeforePredictionImage, OriginalSizePredictionImage, CompressedPredictionImage
 from prediction import predict
 
 from django.test import TestCase
 from unittest.mock import patch, MagicMock, call
 from prediction.apps import PredictionConfig, MQTT_SENSOR_TOPIC
 from ultralytics import YOLO
-
+# import os
+# os.environ['DJANGO_SETTINGS_MODULE'] = 'flare_watcher.settings'
 
 class PredictionConfigTestCase(TestCase):
-
+    
+    @classmethod
     def setUp(self):
         # Properly setting up a PredictionConfig instance with necessary parameters
         self.app_config = PredictionConfig('prediction', 'prediction.apps')
@@ -113,7 +114,6 @@ class PredictionConfigTestCase(TestCase):
         central_system_mock.assert_called_once()
 
     @patch('prediction.apps.PredictionConfig.publish_mqtt_message')
-
     def test_publish_mqtt_message(self, publish_mock):
         # Ensure that the message is published correctly
         topic = "test/topic"
