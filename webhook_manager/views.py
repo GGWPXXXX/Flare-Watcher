@@ -50,6 +50,7 @@ def line_webhook(request):
         # if other method is used, return Method Not Allowed
         return HttpResponse(status=405, content="Method Not Allowed")
 
+
 # @csrf_exempt
 # def line_webhook(request):
 #     """Webhook for Line messaging API."""
@@ -84,19 +85,18 @@ def line_webhook(request):
 #     # Respond with 200 OK for unsupported message types
 #     return HttpResponse(status=200, content="Message type not handled")
 
+# def handle_user_id_message(user_id):
+#     """Handle 'UserId' message type."""
+#     LineWebhook.objects.create(user_id=user_id, event_type='message')
+#     if config('DEPLOYMENT', cast=bool):
+#         # Assuming get_user_id is properly defined to handle a request and user_id
+#         return get_user_id(RequestFactory().get(reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id})), user_id)
+#     return get_user_id(HttpResponse(), user_id)
 
-def handle_user_id_message(user_id):
-    """Handle 'UserId' message type."""
-    LineWebhook.objects.create(user_id=user_id, event_type='message')
-    if config('DEPLOYMENT', cast=bool):
-        # Assuming get_user_id is properly defined to handle a request and user_id
-        return get_user_id(RequestFactory().get(reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id})), user_id)
-    return get_user_id(HttpResponse(), user_id)
-
-def handle_live_data_request(user_id):
-    """Publish live data message to MQTT broker and return success."""
-    publish_mqtt_message(f"b6510545608/request_live_data/{user_id}", "Send live data")
-    return HttpResponse(status=200, content="Success")
+# def handle_live_data_request(user_id):
+#     """Publish live data message to MQTT broker and return success."""
+#     publish_mqtt_message(f"b6510545608/request_live_data/{user_id}", "Send live data")
+#     return HttpResponse(status=200, content="Success")
 
 
 def check_user_id(user_id):
