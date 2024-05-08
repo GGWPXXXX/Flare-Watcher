@@ -11,42 +11,92 @@ import paho.mqtt.client as mqtt
 CHANEL_ACCESS_TOKEN = config('CHANEL_ACCESS_TOKEN')
 
 
+# @csrf_exempt
+# def line_webhook(request):
+#     """ Webhook for Line messaging API """
+#     factory = RequestFactory()
+#     if request.method == "POST":
+#         try:
+#             # create json object from the request body
+#             data = json.loads(request.body.decode("utf-8"))
+#             event_type = data['events'][0]['type']
+#             if event_type == "message":
+
+#                 user_id = data['events'][0]['source']['userId']
+#                 message = data['events'][0]['message']['text']
+#                 if not check_user_id(user_id):
+#                     return HttpResponse(status=400, content="User not found")
+#                 if user_id and message == 'UserId' and check_user_id(user_id):
+#                     LineWebhook.objects.create(
+#                         user_id=user_id,
+#                         event_type=event_type,
+#                     )
+#                     if config('DEPLOYMENT', cast=bool):
+#                         # create a fake GET request to call get_user_id view
+#                         fake_request = factory.get(
+#                             reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
+#                         response = get_user_id(fake_request, user_id)
+#                         return response
+#                     return get_user_id(request, user_id)
+#                 elif message == 'Live Data' and check_user_id(user_id):
+#                     publish_mqtt_message(
+#                         f"b6510545608/request_live_data/{user_id}", "Send live data")
+#                     return HttpResponse(status=200, content="Success")
+#         except Exception as e:
+#             return HttpResponse(status=400, content=e)
+#         # Return a default response even if the message doesn't match any conditions
+#         return HttpResponse(status=200, content="Default response")
+#     else:
+#         # if other method is used, return Method Not Allowed
+#         return HttpResponse(status=405, content="Method Not Allowed")
+
+
 @csrf_exempt
 def line_webhook(request):
-    """ Webhook for Line messaging API """
-    factory = RequestFactory()
-    if request.method == "POST":
-        try:
-            # create json object from the request body
-            data = json.loads(request.body.decode("utf-8"))
-            event_type = data['events'][0]['type']
-            if event_type == "message":
-
-                user_id = data['events'][0]['source']['userId']
-                message = data['events'][0]['message']['text']
-                if user_id and message == 'UserId' and check_user_id(user_id):
-                    LineWebhook.objects.create(
-                        user_id=user_id,
-                        event_type=event_type,
-                    )
-                    if config('DEPLOYMENT', cast=bool):
-                        # create a fake GET request to call get_user_id view
-                        fake_request = factory.get(
-                            reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id}))
-                        response = get_user_id(fake_request, user_id)
-                        return response
-                    return get_user_id(request, user_id)
-                elif message == 'Live Data' and check_user_id(user_id):
-                    publish_mqtt_message(
-                        f"b6510545608/request_live_data/{user_id}", "Send live data")
-                    return HttpResponse(status=200, content="Success")
-        except Exception as e:
-            return HttpResponse(status=400, content=e)
-        # Return a default response even if the message doesn't match any conditions
-        return HttpResponse(status=200, content="Default response")
-    else:
-        # if other method is used, return Method Not Allowed
+    """Webhook for Line messaging API."""
+    if request.method != "POST":
         return HttpResponse(status=405, content="Method Not Allowed")
+
+    try:
+        data = json.loads(request.body.decode("utf-8"))
+        event_type = data['events'][0]['type']
+        user_id = data['events'][0]['source']['userId']
+        message = data['events'][0]['message']['text']
+
+        if not check_user_id(user_id):
+            return HttpResponse(status=400, content="User not found")
+
+        if event_type == "message":
+            return handle_message_type(user_id, message)
+
+    except json.JSONDecodeError as e:
+        return HttpResponse(status=400, content=f"JSON Error: {str(e)}")
+    except Exception as e:
+        return HttpResponse(status=400, content=f"Unexpected Error: {str(e)}")
+
+    return HttpResponse(status=200, content="Unhandled event type")
+
+def handle_message_type(user_id, message):
+    """Handle specific message types."""
+    if message == 'UserId':
+        return handle_user_id_message(user_id)
+    elif message == 'Live Data':
+        return handle_live_data_request(user_id)
+    # Respond with 200 OK for unsupported message types
+    return HttpResponse(status=200, content="Message type not handled")
+
+def handle_user_id_message(user_id):
+    """Handle 'UserId' message type."""
+    LineWebhook.objects.create(user_id=user_id, event_type='message')
+    if config('DEPLOYMENT', cast=bool):
+        # Assuming get_user_id is properly defined to handle a request and user_id
+        return get_user_id(RequestFactory().get(reverse('webhook_manager:get_user_id', kwargs={'user_id': user_id})), user_id)
+    return get_user_id(HttpResponse(), user_id)
+
+def handle_live_data_request(user_id):
+    """Publish live data message to MQTT broker and return success."""
+    publish_mqtt_message(f"b6510545608/request_live_data/{user_id}", "Send live data")
+    return HttpResponse(status=200, content="Success")
 
 
 def check_user_id(user_id):
@@ -139,3 +189,4 @@ def send_line_message(user_id, message):
             url, headers=headers, data=json.dumps(payload))
         return response
     return HttpResponse(status=400, content="User not found")
+
