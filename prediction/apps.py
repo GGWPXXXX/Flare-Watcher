@@ -15,6 +15,7 @@ class PredictionConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
     name = 'prediction'
     app_module = 'prediction.apps'
+    path = 'prediction/apps.py'
 
     uuid = None
     user_id = None
