@@ -167,6 +167,9 @@ pytest.ini/
 # config that use in micropython
 config.py
 
+#sonarqube
+
+.scannerwork/
 
 # PyCharm
 #  JetBrains specific template is maintained in a separate JetBrains.gitignore that can
