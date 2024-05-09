@@ -10,13 +10,13 @@ from config import WIFI_SSID, WIFI_PASS, MQTT_BROKER, MQTT_USER, MQTT_PASS
 
 # MQTT Broker details
 
-USER_ID = "Ua5f5a2a7fba3c4756d3aa39dbf670e6a"
+USER_ID = ""
 
-UUID = "c9f02fdf-52ce-45bb-96e3-7a1ac611cd4f"
+UUID = ""
 
-MQTT_BROKER_NAKE = 'iot.cpe.ku.ac.th'
-MQTT_USER_NAKE = 'b6510545608'
-MQTT_PASS_NAKE = 'pattadon.lo@ku.th'
+MQTT_BROKER_NAKE = ''
+MQTT_USER_NAKE = ''
+MQTT_PASS_NAKE = ''
 
 
 # LED setup for visual feedback
