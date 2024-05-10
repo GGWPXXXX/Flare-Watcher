@@ -1,4 +1,7 @@
-# Flare Watcher Project README
+# Flare Watcher
+## Team members
+1. Pattadon Loyprasert 6510545608 Software and Knowledge Engineering student.
+2. Chaiyawut Thengket 6510545349 Software and Knowledge Engineering student.
 
 ## Overview
 Flare Watcher is an innovative fire detection system that combines environmental sensors and advanced machine learning algorithms to detect and predict fire occurrences in real-time. Utilizing both sensor data and image analysis, this system provides a comprehensive solution for monitoring and responding to fire threats.
