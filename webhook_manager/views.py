@@ -168,6 +168,7 @@ def publish_mqtt_message(topic, message):
     mqtt_client.disconnect()
     return HttpResponse(status=200, content="Success")
 
+
 def send_line_message(user_id, message):
     """ Send a message to the user"""
     url = "https://api.line.me/v2/bot/message/push"
@@ -189,4 +190,3 @@ def send_line_message(user_id, message):
             url, headers=headers, data=json.dumps(payload))
         return response
     return HttpResponse(status=400, content="User not found")
-

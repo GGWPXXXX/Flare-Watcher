@@ -42,9 +42,10 @@ Flare Watcher is an innovative fire detection system that combines environmental
    - **Implementation:** Trained on a dataset with 'fire' and 'no fire' images, improving the system’s visual detection capabilities.
 
 ## Installation and Setup
-```
-   do something here
-```
+### Mobile setup 
+1. You'll need to download our application file via this  [link](https://colab.research.google.com/drive/133wTb-eIgVhNMxCE9WFQnDqw4xx3qokF?usp=sharing)
+2. After you download it, Open the application and head to the settings to set up your MQTT connection.
+3. Inside setting page you'll see the UUID menu, Click copy and paste it into your .env and config.py
 ### Hardware Setup
 1. Connect the SGP30, SHT31, BME280, and KY-026 sensors to your microcontroller as per the respective datasheets.
 2. Ensure a stable power supply and secure connections to avoid data interruptions.
