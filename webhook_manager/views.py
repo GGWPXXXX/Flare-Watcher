@@ -40,7 +40,7 @@ def line_webhook(request):
                     return get_user_id(request, user_id)
                 elif message == 'Live Data' and check_user_id(user_id):
                     publish_mqtt_message(
-                        f"b6510545608/request_live_data/{user_id}", "Send live data")
+                        f"public/request_live_data/{user_id}", "Send live data")
                     return HttpResponse(status=200, content="Success")
         except Exception as e:
             return HttpResponse(status=400, content=e)
