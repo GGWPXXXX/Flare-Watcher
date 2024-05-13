@@ -164,8 +164,6 @@ pytest.ini/
 # secret file
 .env
 
-# config that use in micropython
-config.py
 
 #sonarqube
 
