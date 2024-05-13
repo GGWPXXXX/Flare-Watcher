@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     'webhook_manager',
     'prediction.apps.PredictionConfig',
     'storages',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [

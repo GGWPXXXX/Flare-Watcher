@@ -1,4 +1,7 @@
-# Flare Watcher Project README
+# Flare Watcher
+## Team members
+1. Pattadon Loyprasert 6510545608 Software and Knowledge Engineering student.
+2. Chaiyawut Thengket 6510545349 Software and Knowledge Engineering student.
 
 ## Overview
 Flare Watcher is an innovative fire detection system that combines environmental sensors and advanced machine learning algorithms to detect and predict fire occurrences in real-time. Utilizing both sensor data and image analysis, this system provides a comprehensive solution for monitoring and responding to fire threats.
@@ -42,10 +45,56 @@ Flare Watcher is an innovative fire detection system that combines environmental
    - **Implementation:** Trained on a dataset with 'fire' and 'no fire' images, improving the system’s visual detection capabilities.
 
 ## Installation and Setup
+
+### Django setup
+1. Install [python](https://www.python.org/downloads/)
+2. Clone project and Install python virtual environment.
 ```
-   do something here
+   git clone https://github.com/GGWPXXXX/Flare-Watcher
 ```
-### Hardware Setup
+```
+   python -m pip install virtualenv
+```
+3. Create a new .env file in the project's root directory. You can use a text editor of your choice to create and edit the file, you can see the sameple in sample.env.
+4. Create new environment.
+```
+   python -m venv venv
+```
+5. Run this command to anable virtual environment.
+```
+   venv\Scripts\activate
+```
+6. Use the following command to install necessary dependencies.
+```
+   pip install -r requirements.txt
+```
+7. Run the program.
+```
+   python manage.py migrate
+   python manage.py runserver
+```
+8. If you want to exit the program simply hit ctrl+c to deactivate django server and use
+```
+deactivate
+```
+   in your terminal to exit virtual environment.
+
+### Mobile setup 
+1. You'll need to download MQTT Camera application file via this  [link](https://colab.research.google.com/drive/133wTb-eIgVhNMxCE9WFQnDqw4xx3qokF?usp=sharing).
+2. After you download it, Open the application and head to the settings to set up your MQTT connection.
+3. Inside setting page you'll see the UUID menu, Click copy and paste it into your .env and config.py
+
+### Line setup 
+1. You'll need to create line official account via this [link](https://help.line.me/official_account_jp/ios/categoryId/20008250/pc?contentId=20013136).
+2. Then go to LINE Developer [website](https://developers.line.biz/) and login with the same account of line that you use to create line official account.
+3. After that goto Messaging API and scroll down until you see Channel access token. Copy and paste it into your .env file.
+
+### Amazon S3 setup 
+1. You'll need to create Amazon AWS, you can follow these [instruction](https://docs.aws.amazon.com/AmazonS3/latest/userguide/creating-bucket.html)
+2. Lastly copy AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_STORAGE_BUCKET_NAME, and BUCKET_NAME into your .env file.
+
+
+### Hardware setup
 1. Connect the SGP30, SHT31, BME280, and KY-026 sensors to your microcontroller as per the respective datasheets.
 2. Ensure a stable power supply and secure connections to avoid data interruptions.
 
@@ -59,6 +108,14 @@ Flare Watcher is an innovative fire detection system that combines environmental
 ## Contributing
 
 Contributions to the Flare Watcher project are welcome, including improvements to the machine learning models, sensor integration, and system enhancements. Please submit pull requests or issues through this repository.
+
+## Additional
+
+If you want to see the unit tests of this project simply run,
+```
+   python manage.py test
+```
+Note : Make sure that when you run test you still in virtual environment.
 
 ## Contact
 For more information or inquiries, please contact [Flare Watcher Support](mailto:chaiyawut.t@ku.th).

@@ -40,7 +40,7 @@ def line_webhook(request):
                     return get_user_id(request, user_id)
                 elif message == 'Live Data' and check_user_id(user_id):
                     publish_mqtt_message(
-                        f"b6510545608/request_live_data/{user_id}", "Send live data")
+                        f"public/request_live_data/{user_id}", "Send live data")
                     return HttpResponse(status=200, content="Success")
         except Exception as e:
             return HttpResponse(status=400, content=e)
@@ -168,6 +168,7 @@ def publish_mqtt_message(topic, message):
     mqtt_client.disconnect()
     return HttpResponse(status=200, content="Success")
 
+
 def send_line_message(user_id, message):
     """ Send a message to the user"""
     url = "https://api.line.me/v2/bot/message/push"
@@ -189,4 +190,3 @@ def send_line_message(user_id, message):
             url, headers=headers, data=json.dumps(payload))
         return response
     return HttpResponse(status=400, content="User not found")
-
